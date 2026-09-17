@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: counter_shop_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: counter_shop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis In-Memory Cache & Rate Limiting
+  redis:
+    image: redis:7-alpine
+    container_name: counter_shop_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Next.js 15 Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: counter_shop_web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgrespassword@postgres:5432/counter_shop?schema=public"
+      REDIS_URL: "redis://redis:6379"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+      STEAM_API_KEY: "${STEAM_API_KEY}"
+      JWT_SECRET: "${JWT_SECRET:-secret_jwt_key_counter_shop}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Python Steam Worker Microservice
+  steam-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: counter_shop_steam_worker
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      STEAM_API_KEY: "${STEAM_API_KEY}"
+      REDIS_URL: "redis://redis:6379"
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data:

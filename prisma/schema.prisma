@@ -1,0 +1,306 @@
+// Prisma Schema for SteamItemExchange (counter-shop)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  TRADER
+  MODERATOR
+  ADMIN
+}
+
+enum AppId {
+  CS2   @map("730")
+  DOTA2 @map("570")
+}
+
+enum ItemRarity {
+  CONSUMER
+  INDUSTRIAL
+  MIL_SPEC
+  RESTRICTED
+  CLASSIFIED
+  COVERT
+  CONTRABAND
+  EXTRAORDINARY
+  COMMON
+  UNCOMMON
+  RARE
+  MYTHICAL
+  IMMORTAL
+  LEGENDARY
+  ARCANA
+  ANCIENT
+}
+
+enum ItemCondition {
+  FACTORY_NEW
+  MINIMAL_WEAR
+  FIELD_TESTED
+  WELL_WORN
+  BATTLE_SCARRED
+  NOT_APPLICABLE
+}
+
+enum TradeStatus {
+  PENDING
+  PROCESSING
+  OFFER_SENT
+  ACCEPTED
+  DECLINED
+  CANCELLED
+  ESCROW
+  FAILED
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  CANCELLED
+  LOCKED
+}
+
+enum NotificationType {
+  TRADE_OFFER_RECEIVED
+  TRADE_OFFER_ACCEPTED
+  TRADE_OFFER_DECLINED
+  ITEM_SOLD
+  PRICE_ALERT
+  ARBITRAGE_ALERT
+  SYSTEM_ALERT
+}
+
+model User {
+  id               String          @id @default(cuid())
+  steamId          String          @unique
+  personaName      String
+  profileUrl       String
+  avatar           String
+  avatarMedium     String?
+  avatarFull       String?
+  role             Role            @default(USER)
+  balance          Float           @default(100.0) // USD balance
+  tradeUrl         String?
+  apiKey           String?
+  twoFactorEnabled Boolean         @default(true)
+  isBanned         Boolean         @default(false)
+  clientSeed       String          @default("seed_client_default")
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  accounts         SteamAccount[]
+  inventory        InventoryItem[]
+  listings         MarketListing[]
+  sentOffers       TradeOffer[]    @relation("OffersSent")
+  receivedOffers   TradeOffer[]    @relation("OffersReceived")
+  notifications    Notification[]
+  chatMessages     ChatMessage[]
+
+  @@index([steamId])
+  @@index([role])
+}
+
+model SteamAccount {
+  id           String    @id @default(cuid())
+  userId       String
+  accountName  String
+  steamId      String
+  tradeUrl     String
+  isActive     Boolean   @default(true)
+  proxyAddress String?
+  lastSyncedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, steamId])
+  @@index([userId])
+}
+
+model Item {
+  id              String          @id @default(cuid())
+  appId           Int             @default(730) // 730: CS2, 570: Dota 2
+  marketHashName  String          @unique
+  marketName      String
+  type            String          // e.g. "Rifle", "Sniper Rifle", "Knife", "Hero Item", "Courier"
+  category        String          // "Weapon", "Knife", "Gloves", "Hero Cosmetic", "Music Kit"
+  subCategory     String?         // Weapon type (AK-47, AWP) or Hero name (Pudge, Invoker)
+  rarity          ItemRarity
+  condition       ItemCondition   @default(NOT_APPLICABLE)
+  minFloat        Float?
+  maxFloat        Float?
+  iconUrl         String
+  iconLargeUrl    String?
+  currentPrice    Float           // USD Steam Market median
+  buff163Price    Float?          // USD BUFF price
+  skinportPrice   Float?
+  volume24h       Int             @default(0)
+  priceChange24h  Float           @default(0.0) // Percentage (-5.2, +3.1)
+  isStatTrak      Boolean         @default(false)
+  isSouvenir      Boolean         @default(false)
+  tradable        Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  inventoryItems  InventoryItem[]
+  listings        MarketListing[]
+  priceHistory    PriceHistory[]
+  arbitrageDeals  ArbitrageDeal[]
+  tradeItems      TradeOfferItem[]
+
+  @@index([appId])
+  @@index([rarity])
+  @@index([category])
+  @@index([currentPrice])
+}
+
+model InventoryItem {
+  id           String         @id @default(cuid())
+  assetId      String         @unique
+  classId      String?
+  instanceId   String?
+  userId       String
+  itemId       String
+  floatValue   Float?
+  paintIndex   Int?
+  paintSeed    Int?
+  stickers     Json?          // Array of sticker objects {name, slot, wear, icon}
+  tradableAfter DateTime?
+  isTradable   Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item         Item           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  listing      MarketListing?
+
+  @@index([userId])
+  @@index([itemId])
+}
+
+model MarketListing {
+  id              String         @id @default(cuid())
+  userId          String
+  itemId          String
+  inventoryItemId String         @unique
+  price           Float          // Listing price in USD
+  feeRate         Float          @default(0.02) // 2% platform fee
+  status          ListingStatus  @default(ACTIVE)
+  featured        Boolean        @default(false)
+  views           Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item            Item           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  inventoryItem   InventoryItem  @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([price])
+  @@index([createdAt])
+}
+
+model TradeOffer {
+  id             String           @id @default(cuid())
+  senderId       String
+  receiverId     String
+  steamOfferId   String?          @unique
+  message        String?
+  status         TradeStatus      @default(PENDING)
+  clientSeed     String
+  serverSeed     String
+  serverSeedHash String
+  nonce          Int              @default(1)
+  totalValueSent Float            @default(0.0)
+  totalValueRecv Float            @default(0.0)
+  securityToken  String           @unique
+  completedAt    DateTime?
+  errorMessage   String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  sender         User             @relation("OffersSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver       User             @relation("OffersReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  items          TradeOfferItem[]
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
+}
+
+model TradeOfferItem {
+  id           String      @id @default(cuid())
+  tradeOfferId String
+  itemId       String
+  assetId      String
+  direction    String      // "GIVE" or "RECEIVE"
+  price        Float
+
+  tradeOffer   TradeOffer  @relation(fields: [tradeOfferId], references: [id], onDelete: Cascade)
+  item         Item        @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([tradeOfferId])
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  itemId    String
+  price     Float
+  volume    Int      @default(0)
+  source    String   @default("STEAM") // STEAM, BUFF, SKINPORT
+  timestamp DateTime @default(now())
+
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId, timestamp])
+}
+
+model ArbitrageDeal {
+  id              String   @id @default(cuid())
+  itemId          String
+  steamPrice      Float
+  buffPrice       Float
+  priceSpread     Float    // steamPrice - buffPrice
+  roiPercentage   Float    // Return on Investment after 15% Steam cut
+  volumeDaily     Int      @default(0)
+  isExecutable    Boolean  @default(true)
+  discoveredAt    DateTime @default(now())
+
+  item            Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([roiPercentage])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  metadata  Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  room      String   // "GLOBAL", "TRADE_ROOM_1", "ITEM_123"
+  content   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([room, createdAt])
+}
