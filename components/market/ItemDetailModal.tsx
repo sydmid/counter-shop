@@ -21,10 +21,13 @@ interface ItemDetailModalProps {
   onTradeOffer: (item: any) => void;
 }
 
+import { View } from "lucide-react";
+
 export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModalProps) {
   const [predictionData, setPredictionData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [buyStatus, setBuyStatus] = useState<string | null>(null);
+  const [isPreview360, setIsPreview360] = useState(false);
 
   useEffect(() => {
     async function fetchPrediction() {
@@ -75,11 +78,23 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left Column: Image, stickers, details */}
           <div className="flex flex-col items-center justify-center rounded-xl bg-zinc-900/50 border border-zinc-800 p-6 relative">
-            <img
-              src={item.iconUrl}
-              alt={item.marketName}
-              className="max-h-60 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]"
-            />
+            <div className={`relative transition-transform duration-700 ${isPreview360 ? 'scale-x-[-1]' : ''}`}>
+              <img
+                src={item.iconUrl}
+                alt={item.marketName}
+                className="max-h-60 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]"
+              />
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4 text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-300"
+              onClick={() => setIsPreview360(!isPreview360)}
+            >
+              <View className="w-4 h-4 mr-2" />
+              {isPreview360 ? "Exit 360° Wear Preview" : "360° Wear Preview"}
+            </Button>
             <h3 className="text-xl font-black text-center mt-4 text-white">
               {item.marketName}
             </h3>

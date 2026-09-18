@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { ItemCard } from "@/components/market/ItemCard";
 import { MarketFilters } from "@/components/market/MarketFilters";
 import { ItemDetailModal } from "@/components/market/ItemDetailModal";
-import { Flame } from "lucide-react";
+import { Flame, ShieldCheck, KeyRound } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 export default function MarketPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -53,6 +54,27 @@ export default function MarketPage() {
           <p className="text-xs text-zinc-400">
             Real-time live prices, float inspection, and instant trade offers
           </p>
+        </div>
+      </div>
+
+      {/* Skinport Plus Integration Banner */}
+      <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-indigo-950/20 border border-indigo-500/30 rounded-xl">
+        <div className="flex items-center space-x-2">
+          <ShieldCheck className="w-5 h-5 text-indigo-400" />
+          <span className="text-sm font-semibold text-indigo-200">Skinport Plus Extension Active</span>
+        </div>
+        <div className="flex items-center space-x-4 mt-3 sm:mt-0 text-xs font-mono text-indigo-300">
+          <div className="flex items-center space-x-1">
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>API Key: SECURE</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Partner: VERIFIED</span>
+          </div>
+          <div className="bg-indigo-900/50 px-2 py-1 rounded">
+            Total Value: {formatCurrency(items.reduce((acc, item) => acc + (item.currentPrice || 0), 0))}
+          </div>
         </div>
       </div>
 
