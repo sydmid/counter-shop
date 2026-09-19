@@ -12,7 +12,10 @@ import {
   ArrowRight,
   TrendingUp,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Lock,
+  Unlock,
+  Info
 } from "lucide-react";
 
 interface ItemDetailModalProps {
@@ -22,6 +25,7 @@ interface ItemDetailModalProps {
 }
 
 import { View } from "lucide-react";
+import { getTradeLockLabel } from "@/lib/utils";
 
 export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModalProps) {
   const [predictionData, setPredictionData] = useState<any>(null);
@@ -54,6 +58,7 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
   };
 
   const rarityColor = getRarityColor(item.rarity);
+  const tradeInfo = getTradeLockLabel(item.tradableAfter, item.isTradable ?? item.tradable);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
@@ -68,11 +73,36 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center space-x-3 mb-6">
-          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: rarityColor }} />
-          <span className="text-xs font-mono uppercase text-zinc-400">
-            {item.appId === 730 ? "Counter-Strike 2" : "Dota 2"} • {item.rarity}
-          </span>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
+            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: rarityColor }} />
+            <span className="text-xs font-mono uppercase text-zinc-400">
+              {item.appId === 730 ? "Counter-Strike 2" : "Dota 2"} • {item.rarity}
+            </span>
+          </div>
+
+          <div className="group relative flex items-center">
+            {tradeInfo.isTradable ? (
+              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center space-x-1.5 px-3 py-1">
+                <Unlock className="w-4 h-4" />
+                <span>Tradable</span>
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 flex items-center space-x-1.5 px-3 py-1 cursor-help">
+                <Lock className="w-4 h-4" />
+                <span>{tradeInfo.label}</span>
+                <Info className="w-3 h-3 ml-1 text-amber-500/70" />
+              </Badge>
+            )}
+
+            {/* Tooltip for Trade Hold */}
+            {!tradeInfo.isTradable && (
+              <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-xs text-zinc-300">
+                <div className="font-bold text-amber-400 mb-1">Mandatory 7-Day Steam Trade Hold</div>
+                Items traded recently are subject to Valve's 7-day trade protection rule. This item will auto-deliver once the hold expires.
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

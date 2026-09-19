@@ -98,7 +98,7 @@ export class TradeOfferManager {
 
     if (!offer) throw new Error("Offer not found");
     if (offer.securityToken !== securityToken) throw new Error("Invalid security token");
-    if (offer.status === "ACCEPTED") {
+    if (offer.status === "ACCEPTED" || offer.status === "COMPLETED") {
       throw new Error("Trade already finalized");
     }
 
@@ -115,7 +115,7 @@ export class TradeOfferManager {
       await tx.tradeOffer.update({
         where: { id: tradeId },
         data: {
-          status: "ACCEPTED",
+          status: "COMPLETED",
           completedAt: new Date(),
         },
       });

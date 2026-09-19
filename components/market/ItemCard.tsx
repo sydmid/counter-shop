@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import { formatCurrency, formatPercentage, getRarityColor, getConditionLabel } from "@/lib/utils";
+import { formatCurrency, formatPercentage, getRarityColor, getConditionLabel, getTradeLockLabel } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowUpRight, TrendingUp, ShieldCheck } from "lucide-react";
+import { Sparkles, ArrowUpRight, TrendingUp, ShieldCheck, Lock, Unlock } from "lucide-react";
 
 interface ItemCardProps {
   item: any;
@@ -14,6 +14,7 @@ interface ItemCardProps {
 export function ItemCard({ item, onSelect, onInstantBuy }: ItemCardProps) {
   const rarityColor = getRarityColor(item.rarity);
   const conditionShort = getConditionLabel(item.condition);
+  const tradeInfo = getTradeLockLabel(item.tradableAfter, item.isTradable ?? item.tradable);
 
   return (
     <div
@@ -39,7 +40,21 @@ export function ItemCard({ item, onSelect, onInstantBuy }: ItemCardProps) {
       </div>
 
       {/* Item Image with Radial Glow Backdrop */}
-      <div className="relative my-4 flex items-center justify-center h-44 overflow-hidden">
+      <div className="relative mt-2 mb-4 flex items-center justify-center h-44 overflow-hidden">
+        {/* Trade Lock Badge overlay */}
+        <div className="absolute top-0 right-0 z-20">
+          {tradeInfo.isTradable ? (
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 flex items-center space-x-1 px-2 py-0.5">
+              <Unlock className="w-3 h-3" />
+              <span>Tradable</span>
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/30 flex items-center space-x-1 px-2 py-0.5">
+              <Lock className="w-3 h-3" />
+              <span>{tradeInfo.label}</span>
+            </Badge>
+          )}
+        </div>
         <div
           className="absolute w-28 h-28 rounded-full blur-2xl opacity-20 transition-opacity group-hover:opacity-40"
           style={{ backgroundColor: rarityColor }}

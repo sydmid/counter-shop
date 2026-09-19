@@ -112,3 +112,7 @@ For each day:
   - Implemented Skinport Plus-style extension integration on `/market` page, which includes a UI banner showing API Key check status, trade partner verification, and total item value readout.
   - Expanded `cs2Categories` filter in `MarketFilters.tsx` to include all listed categories: Knife, Gloves, Pistol, Rifle, SMG, Heavy, Agent, Charm, Sticker, Container, Key, Patch, Graffiti, Collectible, Pass, Music Kit.
   - Implemented a "360° Wear Preview" flip toggle within `ItemDetailModal.tsx` for enhanced inspection experience.
+  - Implemented Mandatory 7-day Steam trade hold timers and labels.
+  - Added `tradableAfter` field exclusively to `InventoryItem` in Prisma schema (removing it from abstract `Item`) and updated `seed.ts` for random distribution.
+  - Replicated Skinport UI countdown badges in `ItemCard.tsx` (using formatDistanceToNowStrict).
+  - Added prominent trade protection notice and educational tooltip in `ItemDetailModal.tsx`.

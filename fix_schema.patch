@@ -1,0 +1,10 @@
+--- prisma/schema.prisma
++++ prisma/schema.prisma
+@@ -146,6 +146,7 @@
+   priceChange24h  Float           @default(0.0) // Percentage (-5.2, +3.1)
+   isStatTrak      Boolean         @default(false)
+   isSouvenir      Boolean         @default(false)
+   tradable        Boolean         @default(true)
++  tradableAfter   DateTime?
+   createdAt       DateTime        @default(now())
+   updatedAt       DateTime        @updatedAt

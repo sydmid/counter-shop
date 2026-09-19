@@ -1,0 +1,20 @@
+--- lib/trade-manager.ts
++++ lib/trade-manager.ts
+@@ -98,7 +98,7 @@
+     });
+     if (!offer) throw new Error("Offer not found");
+     if (offer.securityToken !== securityToken) throw new Error("Invalid security token");
+-    if (offer.status === "ACCEPTED" || offer.status === "COMPLETED") {
++    if (offer.status === "ACCEPTED") {
+       throw new Error("Trade already finalized");
+     }
+
+@@ -115,7 +115,7 @@
+       await prisma.tradeOffer.update({
+         where: { id: tradeId },
+         data: {
+-          status: "COMPLETED",
++          status: "ACCEPTED",
+           completedAt: new Date(),
+         },
+       });

@@ -56,6 +56,9 @@ export async function GET(req: NextRequest) {
         listings: {
           where: { status: "ACTIVE" },
           take: 1,
+          include: {
+            inventoryItem: true,
+          },
         },
       },
     }),
@@ -68,9 +71,17 @@ export async function GET(req: NextRequest) {
     limit,
     total,
     totalPages: Math.ceil(total / limit),
-    items: items.map((it) => ({
-      ...it,
-      listingId: it.listings[0]?.id,
-    })),
+    items: items.map((it) => {
+      const activeListing = it.listings[0];
+      const invItem = activeListing?.inventoryItem;
+      return {
+        ...it,
+        listingId: activeListing?.id,
+        tradableAfter: invItem?.tradableAfter ?? null,
+        isTradable: invItem?.isTradable ?? it.tradable, // fallback to abstract item's tradable
+        floatValue: invItem?.floatValue ?? null,
+        paintSeed: invItem?.paintSeed ?? null,
+      };
+    }),
   });
 }
