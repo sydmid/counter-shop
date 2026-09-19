@@ -80,3 +80,32 @@ export function getConditionLabel(condition: string): string {
       return "N/A";
   }
 }
+
+import { formatDistanceToNowStrict, isPast } from "date-fns";
+
+export function getTradeLockLabel(tradableAfter: Date | string | null, isTradable: boolean) {
+  // If explicitly tradable, and no lock, or lock is passed
+  if (tradableAfter) {
+    const targetDate = new Date(tradableAfter);
+    if (isPast(targetDate)) {
+      return { label: "Tradable", isTradable: true };
+    }
+    const distance = formatDistanceToNowStrict(targetDate, { addSuffix: false });
+    // Custom format tweaks if needed (e.g. "5 days") -> "5d"
+    const shortDistance = distance
+      .replace(' days', 'd')
+      .replace(' day', 'd')
+      .replace(' hours', 'h')
+      .replace(' hour', 'h')
+      .replace(' minutes', 'm')
+      .replace(' minute', 'm');
+
+    return { label: shortDistance, isTradable: false };
+  }
+
+  if (isTradable) {
+    return { label: "Tradable", isTradable: true };
+  }
+
+  return { label: "Trade Locked", isTradable: false };
+}

@@ -242,7 +242,7 @@ async function main() {
       date.setDate(date.getDate() - i);
       const variance = (Math.random() - 0.48) * (item.currentPrice * 0.08);
       const histPrice = Math.max(1, +(item.currentPrice + variance).toFixed(2));
-      
+
       await prisma.priceHistory.create({
         data: {
           itemId: item.id,
@@ -286,7 +286,7 @@ async function main() {
         stickers: item.appId === 730 ? [
           { name: "Titan (Holo) | Katowice 2014", slot: 0, wear: 0.0 },
           { name: "Crown (Foil)", slot: 1, wear: 0.02 }
-        ] : [],
+        ] : null,
       },
     });
 
