@@ -116,6 +116,3 @@ For each day:
   - Added `tradableAfter` field exclusively to `InventoryItem` in Prisma schema (removing it from abstract `Item`) and updated `seed.ts` for random distribution.
   - Replicated Skinport UI countdown badges in `ItemCard.tsx` (using formatDistanceToNowStrict).
   - Added prominent trade protection notice and educational tooltip in `ItemDetailModal.tsx`.
-- **2026-09-20**:
-  - Implemented Selling Flow (8% Standard Seller Fee). Created `/sell` page and `/api/sell` endpoint.
-  - Added Adyen KYC verification simulation and banner, inventory selection, and dynamic fee calculation (6% for >$1000 items).

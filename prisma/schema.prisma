@@ -146,6 +146,7 @@ model Item {
   isStatTrak      Boolean         @default(false)
   isSouvenir      Boolean         @default(false)
   tradable        Boolean         @default(true)
+  tradableAfter   DateTime?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
