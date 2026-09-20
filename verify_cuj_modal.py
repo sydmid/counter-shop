@@ -9,7 +9,7 @@ def test_market():
         page = browser.new_page(viewport={"width": 1280, "height": 720})
 
         # Navigate to the local app
-        page.goto("http://localhost:3005/market")
+        page.goto("http://localhost:3002/market")
         page.wait_for_selector(".group.relative", timeout=15000) # Wait for item cards
         time.sleep(2)
 

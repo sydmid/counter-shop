@@ -99,7 +99,7 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
             {!tradeInfo.isTradable && (
               <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-xs text-zinc-300">
                 <div className="font-bold text-amber-400 mb-1">Mandatory 7-Day Steam Trade Hold</div>
-                Items traded recently are subject to Valve's 7-day trade protection rule. This item will auto-deliver once the hold expires.
+                Items traded recently are subject to Valve&apos;s 7-day trade protection rule. This item will auto-deliver once the hold expires.
               </div>
             )}
           </div>
