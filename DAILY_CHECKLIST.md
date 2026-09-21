@@ -108,7 +108,11 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
-- **[Today's Date]**:
+- **2026-09-21**:
+  - Resolved `Cannot find module './638.js'` 500 Internal Server Error in `/api/market/predict` caused by corrupted Next.js build cache (`.next`).
+  - Transitioned development database stack from Docker overlayfs to native PostgreSQL and Redis for stable local environment setup.
+  - Verified and confirmed API routes (market, predict) are healthy via automated Playwright checks.
+  - Investigated frontend 404 image errors; identified root cause as dead external Steam economy image links (`community.steamstatic.com`).
   - Implemented Skinport Plus-style extension integration on `/market` page, which includes a UI banner showing API Key check status, trade partner verification, and total item value readout.
   - Expanded `cs2Categories` filter in `MarketFilters.tsx` to include all listed categories: Knife, Gloves, Pistol, Rifle, SMG, Heavy, Agent, Charm, Sticker, Container, Key, Patch, Graffiti, Collectible, Pass, Music Kit.
   - Implemented a "360° Wear Preview" flip toggle within `ItemDetailModal.tsx` for enhanced inspection experience.
