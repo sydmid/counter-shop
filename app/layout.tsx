@@ -3,6 +3,8 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { LivePriceTicker } from "@/components/layout/LivePriceTicker";
+import { CartProvider } from "@/lib/context/CartContext";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 export const metadata: Metadata = {
   title: "SteamItemExchange (Counter-Shop) - Ultra-Fast CS2 & Dota 2 Trading",
@@ -18,10 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 antialiased selection:bg-blue-600 selection:text-white">
-        <LivePriceTicker />
-        <Navbar />
-        <main className="flex-1 w-full">{children}</main>
-        <Footer />
+        <CartProvider>
+          <LivePriceTicker />
+          <Navbar />
+          <main className="flex-1 w-full">{children}</main>
+          <Footer />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

@@ -109,7 +109,6 @@ export default function MarketPage() {
               key={item.id}
               item={item}
               onSelect={setSelectedItem}
-              onInstantBuy={setSelectedItem}
             />
           ))}
         </div>

@@ -12,14 +12,17 @@ import {
   LogIn, 
   Activity,
   SlidersHorizontal,
-  ChevronDown
+  ChevronDown,
+  ShoppingCart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
+import { useCart } from "@/lib/context/CartContext";
 
 export function Navbar() {
   const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
+  const { items, toggleCart } = useCart();
 
   useEffect(() => {
     async function loadUser() {
@@ -86,8 +89,20 @@ export function Navbar() {
           })}
         </div>
 
-        {/* User Account / Steam Auth Button */}
+        {/* Cart & User Account / Steam Auth Button */}
         <div className="flex items-center space-x-3">
+          <button
+            onClick={toggleCart}
+            className="relative p-2 text-zinc-400 hover:text-white transition-colors"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {items.length > 0 && (
+              <span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-blue-600 rounded-full">
+                {items.length}
+              </span>
+            )}
+          </button>
+
           {user ? (
             <div className="flex items-center space-x-3 bg-zinc-900 border border-zinc-800 p-1.5 pr-3 rounded-full">
               <img
