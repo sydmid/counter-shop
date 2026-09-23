@@ -24,14 +24,17 @@ interface ItemDetailModalProps {
   onTradeOffer: (item: any) => void;
 }
 
-import { View } from "lucide-react";
+import { View, ShoppingCart } from "lucide-react";
 import { getTradeLockLabel } from "@/lib/utils";
+import { useCart } from "@/lib/context/CartContext";
 
 export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModalProps) {
   const [predictionData, setPredictionData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [buyStatus, setBuyStatus] = useState<string | null>(null);
   const [isPreview360, setIsPreview360] = useState(false);
+  const { addToCart, items } = useCart();
+  const isInCart = items.some((i) => (i.listingId || i.id) === (item.listingId || item.id));
 
   useEffect(() => {
     async function fetchPrediction() {
@@ -50,11 +53,19 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
     fetchPrediction();
   }, [item.id]);
 
-  const handleInstantBuy = async () => {
-    setBuyStatus("Initiating Steam automated bot trade offer...");
-    setTimeout(() => {
-      setBuyStatus("Trade offer dispatched! Check your Steam Guard app to accept.");
-    }, 1200);
+  const handleAddToCart = () => {
+    if (!isInCart) {
+      addToCart({
+        id: item.id,
+        listingId: item.listingId,
+        marketName: item.marketName,
+        iconUrl: item.iconUrl,
+        currentPrice: item.currentPrice,
+        isTradable: item.isTradable ?? item.tradable,
+        tradableAfter: item.tradableAfter,
+      });
+      onClose();
+    }
   };
 
   const rarityColor = getRarityColor(item.rarity);
@@ -146,11 +157,22 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
             {/* Instant Actions */}
             <div className="w-full mt-6 space-y-2">
               <Button
-                onClick={handleInstantBuy}
-                variant="glow"
-                className="w-full py-6 font-bold text-sm bg-blue-600 hover:bg-blue-500"
+                onClick={handleAddToCart}
+                variant={isInCart ? "outline" : "glow"}
+                disabled={isInCart}
+                className={`w-full py-6 font-bold text-sm ${!isInCart ? "bg-blue-600 hover:bg-blue-500" : ""}`}
               >
-                Instant Buy for {formatCurrency(item.currentPrice)}
+                {isInCart ? (
+                  <>
+                    <ShoppingCart className="w-4 h-4 mr-2 text-emerald-400" />
+                    Added to Cart
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Add to Cart for {formatCurrency(item.currentPrice)}
+                  </>
+                )}
               </Button>
               <Button
                 onClick={() => onTradeOffer(item)}

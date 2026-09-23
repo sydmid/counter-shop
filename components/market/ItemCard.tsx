@@ -3,16 +3,18 @@ import React from "react";
 import { formatCurrency, formatPercentage, getRarityColor, getConditionLabel, getTradeLockLabel } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowUpRight, TrendingUp, ShieldCheck, Lock, Unlock } from "lucide-react";
+import { Sparkles, ArrowUpRight, TrendingUp, ShieldCheck, Lock, Unlock, ShoppingCart } from "lucide-react";
+import { useCart } from "@/lib/context/CartContext";
 
 interface ItemCardProps {
   item: any;
   onSelect?: (item: any) => void;
-  onInstantBuy?: (item: any) => void;
 }
 
-export function ItemCard({ item, onSelect, onInstantBuy }: ItemCardProps) {
+export function ItemCard({ item, onSelect }: ItemCardProps) {
   const rarityColor = getRarityColor(item.rarity);
+  const { addToCart, items } = useCart();
+  const isInCart = items.some((i) => (i.listingId || i.id) === (item.listingId || item.id));
   const conditionShort = getConditionLabel(item.condition);
   const tradeInfo = getTradeLockLabel(item.tradableAfter, item.isTradable ?? item.tradable);
 
@@ -113,14 +115,32 @@ export function ItemCard({ item, onSelect, onInstantBuy }: ItemCardProps) {
 
         <Button
           size="sm"
-          variant="glow"
+          variant={isInCart ? "outline" : "glow"}
           onClick={(e) => {
             e.stopPropagation();
-            if (onInstantBuy) onInstantBuy(item);
+            if (!isInCart) {
+              addToCart({
+                id: item.id,
+                listingId: item.listingId,
+                marketName: item.marketName,
+                iconUrl: item.iconUrl,
+                currentPrice: item.currentPrice,
+                isTradable: item.isTradable ?? item.tradable,
+                tradableAfter: item.tradableAfter,
+              });
+            }
           }}
-          className="text-xs font-semibold px-3 py-1 bg-blue-600 hover:bg-blue-500"
+          className={`text-xs font-semibold px-3 py-1 ${!isInCart ? "bg-blue-600 hover:bg-blue-500" : ""}`}
+          disabled={isInCart}
         >
-          Buy Now
+          {isInCart ? (
+            <>
+              <ShoppingCart className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+              In Cart
+            </>
+          ) : (
+            "Add to Cart"
+          )}
         </Button>
       </div>
     </div>

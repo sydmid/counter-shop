@@ -108,6 +108,13 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
+- **2026-09-23**:
+  - Implemented Buying Flow with cart state management.
+  - Added Add to Cart UI component and integrated globally with CartContext.
+  - Replaced Instant Buy with Add to Cart buttons in ItemCard and ItemDetailModal.
+  - Created `/api/checkout` endpoint simulating Adyen payment processing.
+  - Confirmed 0% buyer fees, no KYC, and unspendable Skinport balance rules are enforced in the UI.
+  - Added warning logic for items with active trade holds requiring a 7-day auto-delivery custodial wait.
 - **2026-09-21**:
   - Resolved `Cannot find module './638.js'` 500 Internal Server Error in `/api/market/predict` caused by corrupted Next.js build cache (`.next`).
   - Transitioned development database stack from Docker overlayfs to native PostgreSQL and Redis for stable local environment setup.

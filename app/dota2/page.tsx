@@ -85,7 +85,6 @@ export default function Dota2Page() {
               key={item.id}
               item={item}
               onSelect={setSelectedItem}
-              onInstantBuy={setSelectedItem}
             />
           ))}
         </div>
