@@ -130,3 +130,12 @@ For each day:
 - **2026-09-20**:
   - Implemented Selling Flow (8% Standard Seller Fee). Created `/sell` page and `/api/sell` endpoint.
   - Added Adyen KYC verification simulation and banner, inventory selection, and dynamic fee calculation (6% for >$1000 items).
+- **2026-09-24**:
+  - Implemented Support & FAQ Page (`/support`) with an expandable accordion component mirroring Skinport's categories (Trade & Escrow, Payments & Balance, Accounts & Policy).
+  - Added a global footer link to the new Support & FAQ page, replacing the previous dummy Security link.
+  - **Passing checks:**
+    - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
+    - `npm run test` executed successfully (no tests found).
+    - Playwright end-to-end tests structure preserved.
+  - **Unresolved issues:**
+    - ESLint error in `tailwind.config.ts`: `A require() style import is forbidden` (Rule: `@typescript-eslint/no-require-imports`).
