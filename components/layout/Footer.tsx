@@ -36,10 +36,10 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-white mb-3">Security & Transparency</h4>
+          <h4 className="font-semibold text-white mb-3">Security & Support</h4>
           <ul className="space-y-2">
             <li><span className="text-zinc-400">Provably Fair SHA-256</span></li>
-            <li><span className="text-zinc-400">Steam Guard 2FA Verified</span></li>
+            <li><Link href="/support" className="hover:text-blue-400 transition-colors">Support & FAQ</Link></li>
             <li><span className="text-zinc-400">MIT Open Source License</span></li>
             <li><span className="text-zinc-400">Non-Custodial P2P Trades</span></li>
           </ul>
