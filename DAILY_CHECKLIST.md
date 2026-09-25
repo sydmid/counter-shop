@@ -137,5 +137,6 @@ For each day:
     - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
     - `npm run test` executed successfully (no tests found).
     - Playwright end-to-end tests structure preserved.
-  - **Unresolved issues:**
-    - ESLint error in `tailwind.config.ts`: `A require() style import is forbidden` (Rule: `@typescript-eslint/no-require-imports`).
+
+- **2026-09-25**:
+  - Replaced `require()` style import in `tailwind.config.ts` with standard ES6 `import` syntax to resolve ESLint error.
