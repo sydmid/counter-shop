@@ -64,3 +64,19 @@ docker-compose up --build -d
 
 ## License
 MIT
+
+## Content Management System (CMS) Integration
+The repository integrates **Payload CMS (v3.0)** using native Next.js 15 App Router compatibility.
+
+### Architecture Boundaries
+- **Transactional State (Prisma + PostgreSQL):** Core marketplace operations (Trades, Inventory, Users) remain fully managed by Prisma.
+- **Editorial State (Payload + PostgreSQL):** The CMS manages editorial operations (Articles, Categories, CMS Users). It utilizes the `@payloadcms/db-postgres` adapter and uses a dedicated schema (`cms`) within the same PostgreSQL instance to prevent Prisma's `db push` from accidentally destroying CMS data.
+
+### Setup Instructions
+1. Provide `PAYLOAD_SECRET` in your `.env`.
+2. The DB url is strictly separated using the query string `?schema=cms` in the `CMS_DATABASE_URL` environment variable.
+3. Access the admin dashboard at `/cms-admin`.
+4. Role-based access control requires users to be authenticated via the `cms-users` collection.
+
+### AI Draft Generation
+Phase 1 integration features a custom action endpoint `/api/cms/ai-draft` that mocks AI generation and creates an article marked safely as a 'draft'. Future capabilities can connect to an LLM provider and safely deposit structured market reports for human review.
