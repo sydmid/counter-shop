@@ -147,3 +147,13 @@ For each day:
   - **Passing checks:**
     - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
     - `npm run test` executed successfully (no tests found).
+
+## $(date +"%Y-%m-%d") - CMS Integration Implementation
+- **Assessment:** Analyzed Next.js 15, Prisma/Postgres, and `/app/admin` directory structure.
+- **Selection:** Chose Payload CMS (v3) due to native Next.js 15 App Router integration.
+- **Data Model:** Created Collections (`CmsUsers`, `Media`, `Articles`, `Categories`).
+- **Database Boundary:** Configured Payload Postgres adapter to use `?schema=cms` on `CMS_DATABASE_URL` to securely isolate editorial content from the core marketplace transactional logic managed by Prisma.
+- **Frontend & Workflows:** Built `/blog` and `/blog/[slug]` route handlers. Mocked AI workflow via `/api/cms/ai-draft` that sets generated content to 'draft'.
+- **Admin Command Center:** Mounted Payload Admin natively under `/cms-admin`.
+- **Status:** Integrated safely and successfully built.
+- **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
