@@ -38,13 +38,14 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "CS2 Market", href: "/market", icon: Flame },
-    { label: "Dota 2 Hub", href: "/dota2", icon: Zap },
-    { label: "P2P Trading", href: "/trade", icon: ArrowLeftRight },
-    { label: "Arbitrage Bot", href: "/arbitrage", icon: Activity },
+    { label: "Market", href: "/market", icon: Flame },
+    { label: "Sell", href: "/sell", icon: ArrowLeftRight },
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "Admin", href: "/admin", icon: SlidersHorizontal },
   ];
+
+  const languages = ["en", "ru", "sv", "pt", "fr", "de", "fi", "es"];
+  const [currentLang, setCurrentLang] = useState("en");
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/85 backdrop-blur-xl">
@@ -69,6 +70,25 @@ export function Navbar() {
 
         {/* Navigation Tabs */}
         <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <div className="relative group mr-2">
+            <button className="flex items-center space-x-1 text-zinc-400 hover:text-white text-sm font-medium px-2 py-1.5 uppercase transition-colors">
+              <span>{currentLang}</span>
+              <ChevronDown className="w-4 h-4 opacity-70" />
+            </button>
+            <div className="absolute top-full left-0 mt-1 w-24 bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+              <div className="py-1">
+                {languages.map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => setCurrentLang(lang)}
+                    className="w-full text-left px-4 py-1.5 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 uppercase"
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
           {navLinks.map((link) => {
             const Icon = link.icon;
             const active = pathname === link.href;
@@ -87,6 +107,20 @@ export function Navbar() {
               </Link>
             );
           })}
+          <div className="relative group ml-1">
+             <button className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-all">
+                <Activity className="w-4 h-4" />
+                <span>Tools</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+             </button>
+             <div className="absolute top-full left-0 mt-1 w-32 bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <div className="py-1">
+                   <Link href="/market?category=CS2" className="block px-4 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800">CS2</Link>
+                   <Link href="/market?category=Dota2" className="block px-4 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800">Dota 2</Link>
+                   <Link href="/market?category=Rust" className="block px-4 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800">Rust</Link>
+                </div>
+             </div>
+          </div>
         </div>
 
         {/* Cart & User Account / Steam Auth Button */}

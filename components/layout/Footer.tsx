@@ -30,8 +30,8 @@ export function Footer() {
           <ul className="space-y-2">
             <li><Link href="/market" className="hover:text-blue-400 transition-colors">CS2 Skin Exchange</Link></li>
             <li><Link href="/dota2" className="hover:text-blue-400 transition-colors">Dota 2 Immortals & Arcanas</Link></li>
-            <li><Link href="/arbitrage" className="hover:text-blue-400 transition-colors">BUFF163 Arbitrage Terminal</Link></li>
-            <li><Link href="/trade" className="hover:text-blue-400 transition-colors">P2P Escrow Free Trade</Link></li>
+            <li><Link href="/blog" className="hover:text-blue-400 transition-colors">Blog & Content</Link></li>
+            <li><Link href="/faq" className="hover:text-blue-400 transition-colors">FAQ</Link></li>
           </ul>
         </div>
 
@@ -39,9 +39,9 @@ export function Footer() {
           <h4 className="font-semibold text-white mb-3">Security & Support</h4>
           <ul className="space-y-2">
             <li><span className="text-zinc-400">Provably Fair SHA-256</span></li>
-            <li><Link href="/support" className="hover:text-blue-400 transition-colors">Support & FAQ</Link></li>
-            <li><span className="text-zinc-400">MIT Open Source License</span></li>
-            <li><span className="text-zinc-400">Non-Custodial P2P Trades</span></li>
+            <li><Link href="/support" className="hover:text-blue-400 transition-colors">Support</Link></li>
+            <li><Link href="/terms" className="hover:text-blue-400 transition-colors">Terms & Conditions</Link></li>
+            <li><Link href="/privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
           </ul>
         </div>
 

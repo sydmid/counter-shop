@@ -140,3 +140,10 @@ For each day:
 
 - **2026-09-25**:
   - Replaced `require()` style import in `tailwind.config.ts` with standard ES6 `import` syntax to resolve ESLint error.
+- **2026-09-26**:
+  - Implemented the Blog page (`/blog`) with a responsive grid displaying articles.
+  - Updated Top Nav in `Navbar.tsx` to include a Language selector (en, ru, sv, pt, fr, de, fi, es) and aligned navigation links (Market, Sell, Dashboard, Admin, Tools) with a custodial site identity.
+  - Updated `Footer.tsx` to include links to the new Blog page, Terms, Privacy, and FAQ, replacing outdated arbitrary and P2P references.
+  - **Passing checks:**
+    - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
+    - `npm run test` executed successfully (no tests found).
