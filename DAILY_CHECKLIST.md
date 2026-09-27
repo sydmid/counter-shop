@@ -157,3 +157,5 @@ For each day:
 - **Admin Command Center:** Mounted Payload Admin natively under `/cms-admin`.
 - **Status:** Integrated safely and successfully built.
 - **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
+- **2026-09-27**:
+  - Replicated Core Site Identity on home page, navigation, and footer by removing P2P references, adding IEM event banner, and updating Skinport branding.

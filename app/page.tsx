@@ -30,18 +30,18 @@ export default function HomePage() {
           
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-blue-500/30 bg-blue-950/40 text-blue-300 text-xs font-mono font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>Next.js 15 + Redis Live Trade Engine v1.0</span>
+            <span>Trusted by over 35,000+ users</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
-            Ultra-High-Speed Trading for{" "}
+            Buy & Sell CS2 Skins –{" "}
             <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-amber-400 bg-clip-text text-transparent">
-              CS2 & Dota 2 Items
+              Easy and Secure with Skinport
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-            The next-generation open-source trading marketplace. Instant trade offer creation, cross-platform BUFF163 arbitrage scanner, AI price predictions, and provably fair cryptographic guarantees.
+            The premier custodial marketplace. Trade CS2, Dota 2, Rust, and TF2 items with 0% buyer fees, full escrow protection, and fast payouts.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -50,16 +50,10 @@ export default function HomePage() {
                 Explore CS2 Market <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
-            <Link href="/arbitrage">
+            <Link href="/sell">
               <Button size="lg" variant="outline" className="border-zinc-700 hover:bg-zinc-900 text-sm font-semibold">
-                <Activity className="w-4 h-4 mr-2 text-emerald-400" />
-                Launch Arbitrage Bot
-              </Button>
-            </Link>
-            <Link href="/trade">
-              <Button size="lg" variant="secondary" className="bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-sm font-semibold">
-                <ArrowLeftRight className="w-4 h-4 mr-2 text-blue-400" />
-                P2P Trade Room
+                <ArrowLeftRight className="w-4 h-4 mr-2 text-emerald-400" />
+                Sell your skins
               </Button>
             </Link>
           </div>
@@ -74,31 +68,31 @@ export default function HomePage() {
           
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-              <Zap className="w-5 h-5" />
+              <ShieldCheck className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">&lt;50ms Response Latency</h3>
+            <h3 className="text-base font-bold text-white">Secure Custodial Escrow</h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Powered by Redis sliding-window caching, server streaming, and sub-10ms Socket.io trade broadcasts for institutional-grade responsiveness.
+              Full trade protection. Items are securely held by our Steam bots until the 7-day trade hold expires, ensuring safe delivery.
             </p>
           </div>
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm">
             <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-              <Activity className="w-5 h-5" />
+              <Zap className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">BUFF163 Arbitrage Engine</h3>
+            <h3 className="text-base font-bold text-white">0% Buyer Fees</h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Detects real-time price inefficiencies across Asian cash markets and Steam Community Market with automatic 15% fee factoring and automated execution.
+              Buyers pay absolutely zero fees. The price you see is the price you pay at checkout using Adyen secure payment processing.
             </p>
           </div>
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm">
             <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <ShieldCheck className="w-5 h-5" />
+              <Activity className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-white">Provably Fair Trade Hashes</h3>
+            <h3 className="text-base font-bold text-white">Fast Bank Payouts</h3>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Every trade is bound by SHA-256 server seed commits and client nonces, guaranteeing complete mathematical transparency and auditability.
+              Sellers receive direct SEPA/ACH bank transfers securely powered by Adyen. No crypto, no on-site wallet, just real cash.
             </p>
           </div>
 
@@ -107,10 +101,21 @@ export default function HomePage() {
 
       {/* Live Market Teaser */}
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="w-full bg-blue-600/20 border border-blue-500/30 rounded-xl p-4 mb-8 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+             <Flame className="w-6 h-6 text-amber-400" />
+             <div>
+               <h3 className="text-sm font-bold text-white">IEM Cologne Special Event</h3>
+               <p className="text-xs text-blue-200">Exclusive drops and discounted tournament items available now.</p>
+             </div>
+          </div>
+          <Link href="/market?category=IEM"><Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-xs">View Event Offers</Button></Link>
+        </div>
+
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-xl font-bold text-white">Featured High-Tier Skins</h2>
-            <p className="text-xs text-zinc-400">Live CS2 Covert & Dota 2 Arcana liquid items</p>
+            <h2 className="text-xl font-bold text-white">Latest Offers & Hot Items</h2>
+            <p className="text-xs text-zinc-400">Recently listed CS2 and Dota 2 items</p>
           </div>
           <Link href="/market" className="text-xs font-semibold text-blue-400 hover:underline">
             View all items →
