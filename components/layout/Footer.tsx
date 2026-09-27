@@ -11,10 +11,10 @@ export function Footer() {
         <div className="space-y-3 md:col-span-2">
           <div className="flex items-center space-x-2">
             <Shield className="w-5 h-5 text-blue-500" />
-            <span className="font-bold text-white tracking-wider text-sm">SteamItemExchange (Counter-Shop)</span>
+            <span className="font-bold text-white tracking-wider text-sm">Skinport GmbH</span>
           </div>
           <p className="text-zinc-400 text-xs leading-relaxed max-w-md">
-            Ultra-high-performance open-source marketplace, automated trade-offer matching engine, and cross-platform arbitrage terminal for Counter-Strike 2 & Dota 2 items. Built on Next.js 15, PostgreSQL, Redis, and Socket.io.
+            Skinport GmbH, Stuttgart, Germany (registered 2018). Buy & Sell CS2 Skins – Easy and Secure with Skinport. The premier custodial marketplace for CS2, Dota 2, Rust, and TF2.
           </p>
           <div className="flex items-center space-x-4 pt-1 text-zinc-500">
             <span className="flex items-center text-emerald-400 font-mono text-[11px]">
@@ -26,7 +26,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-white mb-3">Trading & Engine</h4>
+          <h4 className="font-semibold text-white mb-3">Marketplace</h4>
           <ul className="space-y-2">
             <li><Link href="/market" className="hover:text-blue-400 transition-colors">CS2 Skin Exchange</Link></li>
             <li><Link href="/dota2" className="hover:text-blue-400 transition-colors">Dota 2 Immortals & Arcanas</Link></li>
@@ -36,7 +36,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-white mb-3">Security & Support</h4>
+          <h4 className="font-semibold text-white mb-3">Support & Legal</h4>
           <ul className="space-y-2">
             <li><span className="text-zinc-400">Provably Fair SHA-256</span></li>
             <li><Link href="/support" className="hover:text-blue-400 transition-colors">Support</Link></li>
@@ -48,7 +48,7 @@ export function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-zinc-900 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-zinc-500 text-[11px]">
-        <p>© 2026 Counter-Shop (SteamItemExchange). Powered by Valve Steam Web API.</p>
+        <p>© 2026 Skinport GmbH. Powered by Valve Steam Web API.</p>
         <p className="mt-2 sm:mt-0">Not affiliated with or endorsed by Valve Corporation.</p>
       </div>
     </footer>

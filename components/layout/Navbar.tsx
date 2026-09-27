@@ -40,8 +40,6 @@ export function Navbar() {
   const navLinks = [
     { label: "Market", href: "/market", icon: Flame },
     { label: "Sell", href: "/sell", icon: ArrowLeftRight },
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Admin", href: "/admin", icon: SlidersHorizontal },
   ];
 
   const languages = ["en", "ru", "sv", "pt", "fr", "de", "fi", "es"];
@@ -60,10 +58,7 @@ export function Navbar() {
           </div>
           <div className="flex flex-col">
             <span className="font-black tracking-wider text-lg bg-gradient-to-r from-white via-zinc-200 to-blue-400 bg-clip-text text-transparent">
-              STEAM<span className="text-blue-500">EXCHANGE</span>
-            </span>
-            <span className="text-[10px] text-zinc-400 font-mono -mt-1 tracking-widest uppercase">
-              Counter-Shop Engine
+              SKIN<span className="text-blue-500">PORT</span>
             </span>
           </div>
         </Link>
