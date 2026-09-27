@@ -14,7 +14,8 @@
     "db:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
     "prisma:generate": "prisma generate",
     "test": "jest --passWithNoTests",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "smoke": "./scripts/smoke.sh"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.90.2",
@@ -39,7 +40,7 @@
     "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.475.0",
-    "next": "^15.1.7",
+    "next": "^15.2.9",
     "openid": "^2.0.10",
     "payload": "^3.90.2",
     "react": "^19.0.0",
