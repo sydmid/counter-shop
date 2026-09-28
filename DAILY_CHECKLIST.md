@@ -148,6 +148,12 @@ For each day:
     - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
     - `npm run test` executed successfully (no tests found).
 
+- **2026-09-28**:
+  - Implemented Account dashboard on `/dashboard` with tabs for Saved Items/Inventory, Purchase History, and Sell History.
+  - Added backend endpoint `/api/user/transactions/route.ts` to fetch user sales from `MarketListing` and purchases from `TradeOffer`.
+  - Added global navigation link to Dashboard in `Navbar.tsx` and wrapped the user profile badge with a link to the dashboard.
+  - Verified Dashboard UI visually (inventory, purchase history, and sell history tabs render correctly).
+
 ## $(date +"%Y-%m-%d") - CMS Integration Implementation
 - **Assessment:** Analyzed Next.js 15, Prisma/Postgres, and `/app/admin` directory structure.
 - **Selection:** Chose Payload CMS (v3) due to native Next.js 15 App Router integration.

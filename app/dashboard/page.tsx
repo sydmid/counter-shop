@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
@@ -12,7 +13,9 @@ import {
   Layers, 
   ArrowUpRight, 
   ArrowDownLeft,
-  Users
+  Users,
+  Clock,
+  CheckCircle2
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -21,6 +24,9 @@ export default function DashboardPage() {
   const [activeGame, setActiveGame] = useState(730);
   const [tradeUrl, setTradeUrl] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [activeTab, setActiveTab] = useState("inventory");
+  const [sales, setSales] = useState<any[]>([]);
+  const [purchases, setPurchases] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadData() {
@@ -35,6 +41,13 @@ export default function DashboardPage() {
         const invRes = await fetch(`/api/inventory?appId=${activeGame}`);
         const invData = await invRes.json();
         if (invData.success) setInventory(invData.items || []);
+
+        const txRes = await fetch("/api/user/transactions");
+        const txData = await txRes.json();
+        if (txData.success) {
+          setSales(txData.sales || []);
+          setPurchases(txData.purchases || []);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -131,53 +144,139 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Inventory Browser */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <h3 className="text-lg font-bold text-white">Your Synchronized Inventory</h3>
-            <div className="flex space-x-1 bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs">
-              <button
-                onClick={() => setActiveGame(730)}
-                className={`px-3 py-1 rounded font-semibold ${activeGame === 730 ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}
-              >
-                CS2
-              </button>
-              <button
-                onClick={() => setActiveGame(570)}
-                className={`px-3 py-1 rounded font-semibold ${activeGame === 570 ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}
-              >
-                Dota 2
-              </button>
+      {/* Tabs */}
+      <div className="flex space-x-4 border-b border-zinc-800">
+        <button
+          onClick={() => setActiveTab("inventory")}
+          className={`pb-2 text-sm font-semibold transition-colors ${activeTab === "inventory" ? "text-blue-500 border-b-2 border-blue-500" : "text-zinc-400 hover:text-zinc-200"}`}
+        >
+          Saved Items / Inventory
+        </button>
+        <button
+          onClick={() => setActiveTab("purchases")}
+          className={`pb-2 text-sm font-semibold transition-colors ${activeTab === "purchases" ? "text-blue-500 border-b-2 border-blue-500" : "text-zinc-400 hover:text-zinc-200"}`}
+        >
+          Purchase History
+        </button>
+        <button
+          onClick={() => setActiveTab("sales")}
+          className={`pb-2 text-sm font-semibold transition-colors ${activeTab === "sales" ? "text-blue-500 border-b-2 border-blue-500" : "text-zinc-400 hover:text-zinc-200"}`}
+        >
+          Sell History
+        </button>
+      </div>
+
+      {/* Content */}
+      {activeTab === "inventory" && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <h3 className="text-lg font-bold text-white">Your Synchronized Inventory</h3>
+              <div className="flex space-x-1 bg-zinc-900 p-1 rounded-lg border border-zinc-800 text-xs">
+                <button
+                  onClick={() => setActiveGame(730)}
+                  className={`px-3 py-1 rounded font-semibold ${activeGame === 730 ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}
+                >
+                  CS2
+                </button>
+                <button
+                  onClick={() => setActiveGame(570)}
+                  className={`px-3 py-1 rounded font-semibold ${activeGame === 570 ? 'bg-blue-600 text-white' : 'text-zinc-400'}`}
+                >
+                  Dota 2
+                </button>
+              </div>
             </div>
+
+            <Button size="sm" variant="outline" className="text-xs border-zinc-800">
+              <RefreshCw className="w-3.5 h-3.5 mr-1" /> Force Sync
+            </Button>
           </div>
 
-          <Button size="sm" variant="outline" className="text-xs border-zinc-800">
-            <RefreshCw className="w-3.5 h-3.5 mr-1" /> Force Sync
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {inventory.map((inv) => (
-            <div
-              key={inv.inventoryId}
-              className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3 flex flex-col justify-between hover:border-zinc-700 transition-colors"
-            >
-              <img src={inv.item.iconUrl} className="h-20 mx-auto object-contain my-2" />
-              <div className="space-y-1">
-                <p className="font-bold text-xs text-white truncate">{inv.item.marketName}</p>
-                <div className="flex justify-between text-[11px] font-mono">
-                  <span className="text-zinc-400">{inv.item.condition !== 'NOT_APPLICABLE' ? inv.item.condition : 'Arcana'}</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrency(inv.item.currentPrice)}</span>
+          {inventory.length === 0 ? (
+            <div className="text-center py-10 text-zinc-500 text-sm">No items found in your inventory.</div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {inventory.map((inv) => (
+                <div
+                  key={inv.inventoryId}
+                  className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-3 flex flex-col justify-between hover:border-zinc-700 transition-colors"
+                >
+                  <img src={inv.item.iconUrl} className="h-20 mx-auto object-contain my-2" />
+                  <div className="space-y-1">
+                    <p className="font-bold text-xs text-white truncate">{inv.item.marketName}</p>
+                    <div className="flex justify-between text-[11px] font-mono">
+                      <span className="text-zinc-400">{inv.item.condition !== 'NOT_APPLICABLE' ? inv.item.condition : 'Arcana'}</span>
+                      <span className="text-emerald-400 font-bold">{formatCurrency(inv.item.currentPrice)}</span>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full mt-3 text-[10px] h-7 border-zinc-800 hover:bg-zinc-800">
+                    List on Market
+                  </Button>
                 </div>
-              </div>
-              <Button size="sm" variant="outline" className="w-full mt-3 text-[10px] h-7 border-zinc-800 hover:bg-zinc-800">
-                List on Market
-              </Button>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      </div>
+      )}
+
+      {activeTab === "purchases" && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold text-white">Purchase History</h3>
+          {purchases.length === 0 ? (
+            <div className="text-center py-10 text-zinc-500 text-sm border border-zinc-800 rounded-xl border-dashed">
+              No purchase history found.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {purchases.map((p) => (
+                <div key={p.id} className="border border-zinc-800 rounded-xl p-4 bg-zinc-900/40 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Trade Offer #{p.id.slice(-6)}</p>
+                    <p className="text-xs text-zinc-400 mt-1 flex items-center"><Clock className="w-3 h-3 mr-1" /> {new Date(p.updatedAt).toLocaleDateString()}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-emerald-400">+{p.items.length} items</p>
+                    <p className="text-xs text-zinc-400 mt-1 flex items-center justify-end"><CheckCircle2 className="w-3 h-3 mr-1 text-emerald-500" /> Completed</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === "sales" && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold text-white">Sell History</h3>
+          {sales.length === 0 ? (
+            <div className="text-center py-10 text-zinc-500 text-sm border border-zinc-800 rounded-xl border-dashed">
+              No sell history found.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {sales.map((sale) => (
+                <div key={sale.id} className="border border-zinc-800 rounded-xl p-4 bg-zinc-900/40 flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <img src={sale.item.iconUrl} className="w-12 h-12 object-contain" />
+                    <div>
+                      <p className="text-sm font-semibold text-white">{sale.item.marketName}</p>
+                      <p className="text-xs text-zinc-400 mt-1 flex items-center"><Clock className="w-3 h-3 mr-1" /> {new Date(sale.updatedAt).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-white">{formatCurrency(sale.price)}</p>
+                    <p className={`text-xs mt-1 flex items-center justify-end ${sale.status === 'SOLD' ? 'text-emerald-500' : 'text-blue-400'}`}>
+                      {sale.status === 'SOLD' ? <CheckCircle2 className="w-3 h-3 mr-1" /> : <RefreshCw className="w-3 h-3 mr-1" />}
+                      {sale.status}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
     </div>
   );
