@@ -40,6 +40,7 @@ export function Navbar() {
   const navLinks = [
     { label: "Market", href: "/market", icon: Flame },
     { label: "Sell", href: "/sell", icon: ArrowLeftRight },
+    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   ];
 
   const languages = ["en", "ru", "sv", "pt", "fr", "de", "fi", "es"];
@@ -133,7 +134,7 @@ export function Navbar() {
           </button>
 
           {user ? (
-            <div className="flex items-center space-x-3 bg-zinc-900 border border-zinc-800 p-1.5 pr-3 rounded-full">
+            <Link href="/dashboard" className="flex items-center space-x-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 p-1.5 pr-3 rounded-full transition-colors cursor-pointer">
               <img
                 src={user.avatar}
                 alt={user.personaName}
@@ -148,7 +149,7 @@ export function Navbar() {
                   {formatCurrency(user.balance)}
                 </span>
               </div>
-            </div>
+            </Link>
           ) : (
             <a href="/api/auth/steam">
               <Button variant="glow" className="flex items-center space-x-2 bg-gradient-to-r from-blue-700 to-zinc-800 text-white text-xs px-4">
