@@ -119,9 +119,6 @@ export default function MarketPage() {
         <ItemDetailModal
           item={selectedItem}
           onClose={() => setSelectedItem(null)}
-          onTradeOffer={() => {
-            window.location.href = "/trade";
-          }}
         />
       )}
 

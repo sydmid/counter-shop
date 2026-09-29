@@ -21,14 +21,13 @@ import {
 interface ItemDetailModalProps {
   item: any;
   onClose: () => void;
-  onTradeOffer: (item: any) => void;
 }
 
 import { View, ShoppingCart } from "lucide-react";
 import { getTradeLockLabel } from "@/lib/utils";
 import { useCart } from "@/lib/context/CartContext";
 
-export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModalProps) {
+export function ItemDetailModal({ item, onClose }: ItemDetailModalProps) {
   const [predictionData, setPredictionData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [buyStatus, setBuyStatus] = useState<string | null>(null);
@@ -173,13 +172,6 @@ export function ItemDetailModal({ item, onClose, onTradeOffer }: ItemDetailModal
                     Add to Cart for {formatCurrency(item.currentPrice)}
                   </>
                 )}
-              </Button>
-              <Button
-                onClick={() => onTradeOffer(item)}
-                variant="outline"
-                className="w-full py-5 text-xs text-zinc-300 border-zinc-700 hover:bg-zinc-800"
-              >
-                Initiate P2P Item Swap
               </Button>
             </div>
 

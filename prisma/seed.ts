@@ -24,7 +24,7 @@ async function main() {
     },
   });
 
-  // Secondary Demo User for P2P trading tests
+ // Secondary Demo User
   const traderUser = await prisma.user.upsert({
     where: { steamId: "76561198087654321" },
     update: {},

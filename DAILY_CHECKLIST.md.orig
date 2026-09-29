@@ -108,7 +108,18 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
-- **[Today's Date]**:
+- **2026-09-23**:
+  - Implemented Buying Flow with cart state management.
+  - Added Add to Cart UI component and integrated globally with CartContext.
+  - Replaced Instant Buy with Add to Cart buttons in ItemCard and ItemDetailModal.
+  - Created `/api/checkout` endpoint simulating Adyen payment processing.
+  - Confirmed 0% buyer fees, no KYC, and unspendable Skinport balance rules are enforced in the UI.
+  - Added warning logic for items with active trade holds requiring a 7-day auto-delivery custodial wait.
+- **2026-09-21**:
+  - Resolved `Cannot find module './638.js'` 500 Internal Server Error in `/api/market/predict` caused by corrupted Next.js build cache (`.next`).
+  - Transitioned development database stack from Docker overlayfs to native PostgreSQL and Redis for stable local environment setup.
+  - Verified and confirmed API routes (market, predict) are healthy via automated Playwright checks.
+  - Investigated frontend 404 image errors; identified root cause as dead external Steam economy image links (`community.steamstatic.com`).
   - Implemented Skinport Plus-style extension integration on `/market` page, which includes a UI banner showing API Key check status, trade partner verification, and total item value readout.
   - Expanded `cs2Categories` filter in `MarketFilters.tsx` to include all listed categories: Knife, Gloves, Pistol, Rifle, SMG, Heavy, Agent, Charm, Sticker, Container, Key, Patch, Graffiti, Collectible, Pass, Music Kit.
   - Implemented a "360° Wear Preview" flip toggle within `ItemDetailModal.tsx` for enhanced inspection experience.
@@ -116,3 +127,41 @@ For each day:
   - Added `tradableAfter` field exclusively to `InventoryItem` in Prisma schema (removing it from abstract `Item`) and updated `seed.ts` for random distribution.
   - Replicated Skinport UI countdown badges in `ItemCard.tsx` (using formatDistanceToNowStrict).
   - Added prominent trade protection notice and educational tooltip in `ItemDetailModal.tsx`.
+- **2026-09-20**:
+  - Implemented Selling Flow (8% Standard Seller Fee). Created `/sell` page and `/api/sell` endpoint.
+  - Added Adyen KYC verification simulation and banner, inventory selection, and dynamic fee calculation (6% for >$1000 items).
+- **2026-09-24**:
+  - Implemented Support & FAQ Page (`/support`) with an expandable accordion component mirroring Skinport's categories (Trade & Escrow, Payments & Balance, Accounts & Policy).
+  - Added a global footer link to the new Support & FAQ page, replacing the previous dummy Security link.
+  - **Passing checks:**
+    - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
+    - `npm run test` executed successfully (no tests found).
+    - Playwright end-to-end tests structure preserved.
+
+- **2026-09-25**:
+  - Replaced `require()` style import in `tailwind.config.ts` with standard ES6 `import` syntax to resolve ESLint error.
+- **2026-09-26**:
+  - Implemented the Blog page (`/blog`) with a responsive grid displaying articles.
+  - Updated Top Nav in `Navbar.tsx` to include a Language selector (en, ru, sv, pt, fr, de, fi, es) and aligned navigation links (Market, Sell, Dashboard, Admin, Tools) with a custodial site identity.
+  - Updated `Footer.tsx` to include links to the new Blog page, Terms, Privacy, and FAQ, replacing outdated arbitrary and P2P references.
+  - **Passing checks:**
+    - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
+    - `npm run test` executed successfully (no tests found).
+
+- **2026-09-28**:
+  - Implemented Account dashboard on `/dashboard` with tabs for Saved Items/Inventory, Purchase History, and Sell History.
+  - Added backend endpoint `/api/user/transactions/route.ts` to fetch user sales from `MarketListing` and purchases from `TradeOffer`.
+  - Added global navigation link to Dashboard in `Navbar.tsx` and wrapped the user profile badge with a link to the dashboard.
+  - Verified Dashboard UI visually (inventory, purchase history, and sell history tabs render correctly).
+
+## $(date +"%Y-%m-%d") - CMS Integration Implementation
+- **Assessment:** Analyzed Next.js 15, Prisma/Postgres, and `/app/admin` directory structure.
+- **Selection:** Chose Payload CMS (v3) due to native Next.js 15 App Router integration.
+- **Data Model:** Created Collections (`CmsUsers`, `Media`, `Articles`, `Categories`).
+- **Database Boundary:** Configured Payload Postgres adapter to use `?schema=cms` on `CMS_DATABASE_URL` to securely isolate editorial content from the core marketplace transactional logic managed by Prisma.
+- **Frontend & Workflows:** Built `/blog` and `/blog/[slug]` route handlers. Mocked AI workflow via `/api/cms/ai-draft` that sets generated content to 'draft'.
+- **Admin Command Center:** Mounted Payload Admin natively under `/cms-admin`.
+- **Status:** Integrated safely and successfully built.
+- **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
+- **2026-09-27**:
+  - Replicated Core Site Identity on home page, navigation, and footer by removing P2P references, adding IEM event banner, and updating Skinport branding.
