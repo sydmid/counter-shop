@@ -7,7 +7,7 @@ This document is structured as a **daily build checklist** for an autonomous age
 The document is kept in Markdown for easy parsing by an AI coder. All sections are exhaustive based on live site inspection (homepage, market, sell page, full FAQ, support, blog, and related pages) as of 17 September 2026. Features are listed with exact implementation requirements.
 
 ### 1. Core Site Identity & Branding
-- **Company**: Skinport GmbH, Stuttgart, Germany (registered 2018). Custodial marketplace (not P2P).
+- **Company**: Skinport GmbH, Stuttgart, Germany (registered 2018). Custodial marketplace .
 - **Tagline & Hero**: “Buy & Sell CS2 Skins – Easy and Secure with Skinport” (multi-language versions: en, ru, sv, pt, fr, de, fi, es).
 - **Platforms**: Primarily CS2; also Dota 2, Rust, TF2. Catalogue of ~3.7 million items with full float/exterior/StatTrak/pattern filters.
 - **Design System**: Clean e-commerce UI (dark/light mode possible via currency switch), responsive, modern marketplace style. Homepage highlights IEM Cologne event, latest offers, and “Hot” / “New” sections.
@@ -143,7 +143,7 @@ For each day:
 - **2026-09-26**:
   - Implemented the Blog page (`/blog`) with a responsive grid displaying articles.
   - Updated Top Nav in `Navbar.tsx` to include a Language selector (en, ru, sv, pt, fr, de, fi, es) and aligned navigation links (Market, Sell, Dashboard, Admin, Tools) with a custodial site identity.
-  - Updated `Footer.tsx` to include links to the new Blog page, Terms, Privacy, and FAQ, replacing outdated arbitrary and P2P references.
+  - Updated `Footer.tsx` to include links to the new Blog page, Terms, Privacy, and FAQ, replacing outdated arbitrary references.
   - **Passing checks:**
     - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
     - `npm run test` executed successfully (no tests found).
@@ -164,4 +164,9 @@ For each day:
 - **Status:** Integrated safely and successfully built.
 - **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
 - **2026-09-27**:
-  - Replicated Core Site Identity on home page, navigation, and footer by removing P2P references, adding IEM event banner, and updating Skinport branding.
+  - Replicated Core Site Identity on home page, navigation, and footer, adding IEM event banner, and updating Skinport branding.
+- **$(date +"%Y-%m-%d")**:
+  - Replicated Skinport exact feature: Custodial marketplace (not P2P).
+  - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
+  - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
+  - Updated `app/dota2/page.tsx`, `app/layout.tsx`, `README.md`, `prisma/seed.ts` and `components/market/ItemDetailModal.tsx` to remove non-custodial components and references.

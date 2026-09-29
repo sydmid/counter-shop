@@ -51,7 +51,7 @@ export default function Dota2Page() {
         <div>
           <h1 className="text-2xl font-black text-white">Dota 2 Cosmological Vault</h1>
           <p className="text-xs text-zinc-400">
-            Arcanas, Immortals, Couriers, and Hero sets with instant P2P swap
+            Arcanas, Immortals, Couriers, and Hero sets
           </p>
         </div>
       </div>
@@ -94,9 +94,6 @@ export default function Dota2Page() {
         <ItemDetailModal
           item={selectedItem}
           onClose={() => setSelectedItem(null)}
-          onTradeOffer={() => {
-            window.location.href = "/trade";
-          }}
         />
       )}
 

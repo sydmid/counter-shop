@@ -9,7 +9,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 export const metadata: Metadata = {
   title: "SteamItemExchange (Counter-Shop) - Ultra-Fast CS2 & Dota 2 Trading",
   description:
-    "High-performance open-source marketplace for CS2 & Dota 2 items. Features real-time price tickers, BUFF163 arbitrage scanner, provably fair P2P trade matching, and automated bot fulfillment.",
+    "High-performance open-source marketplace for CS2 & Dota 2 items. Features real-time price tickers, and automated bot fulfillment.",
 };
 
 export default function RootLayout({

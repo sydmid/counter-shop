@@ -1,11 +1,11 @@
 # SteamItemExchange (counter-shop)
 
-High-performance marketplace and P2P trading engine for Counter-Strike 2 and Dota 2 items.
+High-performance marketplace for Counter-Strike 2 and Dota 2 items.
 
 ## Architecture
 
 - **Frontend**: Next.js 15 (App Router, Server Components), TypeScript, Tailwind CSS, Radix UI, Framer Motion
-- **Backend**: Next.js Route Handlers, Socket.io (realtime ticker & P2P trade rooms)
+- **Backend**: Next.js Route Handlers, Socket.io (realtime ticker)
 - **Database & Cache**: PostgreSQL (Prisma ORM), Redis (sliding-window rate limiting & pricing cache)
 - **Microservices**: Python FastAPI worker (`scripts/steam_service.py`) for Steam Community API scraping and trade dispatch
 - **Security**: Steam OpenID 2.0 auth, HMAC-SHA256 provably fair audit verification, parameterized queries
@@ -58,9 +58,6 @@ docker-compose up --build -d
 | GET | `/api/market/items` | Query catalog with filters (wear, rarity, price) |
 | GET | `/api/market/ticker` | 10s cached pricing ticker feed |
 | GET | `/api/market/predict` | Time-series 7-day price forecasting |
-| GET | `/api/arbitrage` | BUFF163 vs Steam Community margin scanner |
-| POST | `/api/trade/create` | Create provably fair P2P trade offer |
-| POST | `/api/trade/p2p` | Settle atomic trade exchange |
 
 ## License
 MIT
