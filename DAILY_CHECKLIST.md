@@ -170,3 +170,10 @@ For each day:
   - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
   - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
   - Updated `app/dota2/page.tsx`, `app/layout.tsx`, `README.md`, `prisma/seed.ts` and `components/market/ItemDetailModal.tsx` to remove non-custodial components and references.
+- **2026-09-30**:
+  - Task: Day 3: Secure /api/cms/ai-draft to prevent public abuse.
+  - Implemented Payload CMS authentication requirement on `/api/cms/ai-draft`.
+  - Added role check for `admin` and `editor` roles before allowing draft generation.
+  - Returns `401 Unauthorized` for unauthenticated requests and `403 Forbidden` for unauthorized roles.
+  - Added testing documentation and a dev-only curl snippet to `docs/cms/ARCHITECTURE.md`.
+  - Ran `npm run lint`, `npm run build`, and `npm run smoke` to ensure code changes have not introduced regressions.

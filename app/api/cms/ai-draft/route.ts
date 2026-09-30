@@ -1,10 +1,25 @@
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
+import { headers } from 'next/headers';
 
 export async function POST() {
   try {
     const payload = await getPayload({ config: configPromise });
+    const reqHeaders = await headers();
+    const { user } = await payload.auth({ headers: reqHeaders });
+
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (user.collection !== 'cms-users') {
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
+
+    if (user.role !== 'admin' && user.role !== 'editor') {
+      return NextResponse.json({ success: false, error: 'Forbidden: Insufficient permissions' }, { status: 403 });
+    }
 
     // Simulate AI generation delay
     await new Promise(resolve => setTimeout(resolve, 1000));
