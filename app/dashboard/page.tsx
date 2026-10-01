@@ -89,7 +89,7 @@ export default function DashboardPage() {
           />
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-xl font-bold text-white">{user?.personaName || "Trader"}</h2>
+              <h2 className="text-xl font-bold text-white">{user?.personaName || "User"}</h2>
               <span className="text-[10px] font-mono bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">
                 Steam Verified
               </span>

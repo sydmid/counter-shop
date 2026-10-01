@@ -12,7 +12,8 @@ async function main() {
     update: {},
     create: {
       steamId: "76561198012345678",
-      personaName: "ProTrader_Elite",
+      personaName: "ProUser_Elite",
+
       profileUrl: "https://steamcommunity.com/profiles/76561198012345678",
       avatar: "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg",
       avatarMedium: "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg",
@@ -25,22 +26,9 @@ async function main() {
   });
 
  // Secondary Demo User
-  const traderUser = await prisma.user.upsert({
-    where: { steamId: "76561198087654321" },
-    update: {},
-    create: {
-      steamId: "76561198087654321",
-      personaName: "SkinBaron_Vault",
-      profileUrl: "https://steamcommunity.com/profiles/76561198087654321",
-      avatar: "https://avatars.steamstatic.com/c4b8b60451a5472aa5e4f40f3b063ea534c892b1_full.jpg",
-      role: Role.TRADER,
-      balance: 5240.00,
-      tradeUrl: "https://steamcommunity.com/tradeoffer/new/?partner=99881122&token=VaultToken789",
-      clientSeed: crypto.randomBytes(16).toString("hex"),
-    },
-  });
 
-  console.log(`Created demo users: ${demoUser.personaName} and ${traderUser.personaName}`);
+
+  console.log(`Created demo user: ${demoUser.personaName}`);
 
   // 2. Catalog of Top Tier CS2 Items
   const cs2Items = [
@@ -254,26 +242,6 @@ async function main() {
       });
     }
 
-    // Generate Arbitrage Deal entries
-    if (item.buff163Price) {
-      const spread = +(item.currentPrice - item.buff163Price).toFixed(2);
-      // Steam cut is 15% (item.currentPrice * 0.85 - buff163Price)
-      const netProfit = +(item.currentPrice * 0.85 - item.buff163Price).toFixed(2);
-      const roi = +((netProfit / item.buff163Price) * 100).toFixed(2);
-
-      await prisma.arbitrageDeal.create({
-        data: {
-          itemId: item.id,
-          steamPrice: item.currentPrice,
-          buffPrice: item.buff163Price,
-          priceSpread: spread,
-          roiPercentage: roi,
-          volumeDaily: item.volume24h,
-          isExecutable: roi > 0,
-        },
-      });
-    }
-
     // Give Demo User an inventory copy and create a marketplace listing
     const inv = await prisma.inventoryItem.create({
       data: {
@@ -303,31 +271,13 @@ async function main() {
     });
   }
 
-  // Create a Sample Trade Offer between demoUser and traderUser
-  const sampleOffer = await prisma.tradeOffer.create({
-    data: {
-      senderId: traderUser.id,
-      receiverId: demoUser.id,
-      steamOfferId: "OFFER_99882211",
-      message: "Hey! Want to trade my Dragonclaw Hook for your Vice Gloves + cash offset.",
-      status: "PENDING",
-      clientSeed: "seed_client_xyz123",
-      serverSeed: "seed_server_hash_abc456",
-      serverSeedHash: crypto.createHash("sha256").update("seed_server_hash_abc456").digest("hex"),
-      nonce: 1,
-      totalValueSent: 195.00,
-      totalValueRecv: 2150.00,
-      securityToken: crypto.randomBytes(8).toString("hex"),
-    }
-  });
-
   // Create Welcome Notification
   await prisma.notification.create({
     data: {
       userId: demoUser.id,
       type: "SYSTEM_ALERT",
       title: "Welcome to Counter-Shop Platform",
-      message: "Your Steam inventory is connected. Real-time market ticker and arbitrage signals are active.",
+      message: "Your Steam inventory is connected. Real-time market ticker is active.",
     }
   });
 

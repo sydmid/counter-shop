@@ -27,17 +27,7 @@ export interface MarketItemView {
   stickers?: any;
 }
 
-export interface ArbitrageOpportunity {
-  id: string;
-  item: MarketItemView;
-  steamPrice: number;
-  buffPrice: number;
-  spread: number;
-  netProfit: number;
-  roiPercentage: number;
-  volume: number;
-  isExecutable: boolean;
-}
+
 
 export interface PriceTickerItem {
   id: string;

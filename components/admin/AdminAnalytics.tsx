@@ -55,7 +55,7 @@ export function AdminAnalytics() {
         <Card className="border-zinc-800 bg-zinc-950">
           <CardContent className="p-5 flex items-center justify-between">
             <div>
-              <p className="text-xs text-zinc-400 font-mono">Total Users & Traders</p>
+              <p className="text-xs text-zinc-400 font-mono">Total Users</p>
               <h3 className="text-2xl font-black text-white font-mono mt-1">
                 {stats.totalUsers.toLocaleString()}
               </h3>

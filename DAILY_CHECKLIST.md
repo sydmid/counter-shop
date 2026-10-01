@@ -177,3 +177,8 @@ For each day:
   - Returns `401 Unauthorized` for unauthenticated requests and `403 Forbidden` for unauthorized roles.
   - Added testing documentation and a dev-only curl snippet to `docs/cms/ARCHITECTURE.md`.
   - Ran `npm run lint`, `npm run build`, and `npm run smoke` to ensure code changes have not introduced regressions.
+
+- **2026-10-01**:
+  - Removed remaining references to non-custodial features (`TRADER` role, `ArbitrageDeal` model, `ArbitrageOpportunity` type, `ChatMessage` model, etc.).
+  - Updated `prisma/schema.prisma`, `prisma/seed.ts`, `types/market.ts`, `components/admin/AdminAnalytics.tsx`, `app/dashboard/page.tsx`, and `app/api/auth/steam/return/route.ts` to reflect the clean custodial marketplace architecture.
+  - Ensured Next.js build (`npm run build`) and tests pass successfully.
