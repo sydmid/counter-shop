@@ -10,7 +10,6 @@ datasource db {
 
 enum Role {
   USER
-  TRADER
   MODERATOR
   ADMIN
 }
@@ -72,7 +71,6 @@ enum NotificationType {
   TRADE_OFFER_DECLINED
   ITEM_SOLD
   PRICE_ALERT
-  ARBITRAGE_ALERT
   SYSTEM_ALERT
 }
 
@@ -100,7 +98,6 @@ model User {
   sentOffers       TradeOffer[]    @relation("OffersSent")
   receivedOffers   TradeOffer[]    @relation("OffersReceived")
   notifications    Notification[]
-  chatMessages     ChatMessage[]
 
   @@index([steamId])
   @@index([role])
@@ -153,7 +150,6 @@ model Item {
   inventoryItems  InventoryItem[]
   listings        MarketListing[]
   priceHistory    PriceHistory[]
-  arbitrageDeals  ArbitrageDeal[]
   tradeItems      TradeOfferItem[]
 
   @@index([appId])
@@ -263,21 +259,7 @@ model PriceHistory {
   @@index([itemId, timestamp])
 }
 
-model ArbitrageDeal {
-  id              String   @id @default(cuid())
-  itemId          String
-  steamPrice      Float
-  buffPrice       Float
-  priceSpread     Float    // steamPrice - buffPrice
-  roiPercentage   Float    // Return on Investment after 15% Steam cut
-  volumeDaily     Int      @default(0)
-  isExecutable    Boolean  @default(true)
-  discoveredAt    DateTime @default(now())
 
-  item            Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-
-  @@index([roiPercentage])
-}
 
 model Notification {
   id        String           @id @default(cuid())
@@ -294,14 +276,4 @@ model Notification {
   @@index([userId, isRead])
 }
 
-model ChatMessage {
-  id        String   @id @default(cuid())
-  userId    String
-  room      String   // "GLOBAL", "TRADE_ROOM_1", "ITEM_123"
-  content   String
-  createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([room, createdAt])
-}
