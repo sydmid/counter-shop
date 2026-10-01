@@ -26,3 +26,21 @@ Instead of making HTTP requests to external endpoints, server-side routes direct
 *   **AI Draft API (`app/api/cms/ai-draft/route.ts`):** Creates AI-generated drafts by interacting directly with the Payload local API, ensuring rapid processing while maintaining the security of the internal database connection.
 
 By using `getPayload` locally, we avoid the overhead of network requests within the server and ensure our Next.js frontend is tightly integrated with the CMS backend securely.
+## Security & Access Control
+
+Endpoints exposed under the `/api/cms/` path are secured to prevent unauthorized access. The system uses Payload CMS's built-in authentication system.
+
+### Testing the AI Draft Endpoint
+
+The `/api/cms/ai-draft` endpoint requires an authenticated user session with either `admin` or `editor` roles to function. Unauthorized requests will be rejected with a `401 Unauthorized` or `403 Forbidden` response.
+
+If you are developing locally, you can trigger this endpoint via the browser console while logged in to the Payload admin dashboard:
+
+```javascript
+fetch('/api/cms/ai-draft', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}).then(res => res.json()).then(console.log);
+```
