@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   const playerSummaries = await SteamApiClient.getPlayerSummaries([steamId]);
   const player = playerSummaries[0];
 
-  const personaName = player?.personaname || `Trader_${steamId.slice(-4)}`;
+  const personaName = player?.personaname || `User_${steamId.slice(-4)}`;
   const avatar = player?.avatarfull || "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg";
   const profileUrl = player?.profileurl || `https://steamcommunity.com/profiles/${steamId}`;
 

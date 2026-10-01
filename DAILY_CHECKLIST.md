@@ -170,3 +170,8 @@ For each day:
   - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
   - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
   - Updated `app/dota2/page.tsx`, `app/layout.tsx`, `README.md`, `prisma/seed.ts` and `components/market/ItemDetailModal.tsx` to remove non-custodial components and references.
+
+- **2026-10-01**:
+  - Removed remaining references to non-custodial features (`TRADER` role, `ArbitrageDeal` model, `ArbitrageOpportunity` type, `ChatMessage` model, etc.).
+  - Updated `prisma/schema.prisma`, `prisma/seed.ts`, `types/market.ts`, `components/admin/AdminAnalytics.tsx`, `app/dashboard/page.tsx`, and `app/api/auth/steam/return/route.ts` to reflect the clean custodial marketplace architecture.
+  - Ensured Next.js build (`npm run build`) and tests pass successfully.
