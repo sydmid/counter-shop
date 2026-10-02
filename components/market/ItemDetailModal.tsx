@@ -32,13 +32,14 @@ export function ItemDetailModal({ item, onClose }: ItemDetailModalProps) {
   const [loading, setLoading] = useState(true);
   const [buyStatus, setBuyStatus] = useState<string | null>(null);
   const [isPreview360, setIsPreview360] = useState(false);
+  const [chartRange, setChartRange] = useState("1M");
   const { addToCart, items } = useCart();
   const isInCart = items.some((i) => (i.listingId || i.id) === (item.listingId || item.id));
 
   useEffect(() => {
     async function fetchPrediction() {
       try {
-        const res = await fetch(`/api/market/predict?itemId=${item.id}`);
+        const res = await fetch(`/api/market/predict?itemId=${item.id}&range=${chartRange}`);
         const data = await res.json();
         if (data.success) {
           setPredictionData(data);
@@ -50,7 +51,7 @@ export function ItemDetailModal({ item, onClose }: ItemDetailModalProps) {
       }
     }
     fetchPrediction();
-  }, [item.id]);
+  }, [item.id, chartRange]);
 
   const handleAddToCart = () => {
     if (!isInCart) {
@@ -229,7 +230,28 @@ export function ItemDetailModal({ item, onClose }: ItemDetailModalProps) {
             {/* Historical Price Chart */}
             <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-semibold text-zinc-300">30-Day Price Movement</span>
+
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-semibold text-zinc-300">
+                    {chartRange === "1W" ? "7-Day" : chartRange === "1M" ? "1-Month" : chartRange === "3M" ? "3-Month" : chartRange === "6M" ? "6-Month" : "1-Year"} Price Movement
+                  </span>
+                  <div className="flex space-x-1 bg-zinc-950 p-1 rounded-md border border-zinc-800">
+                    {["1W", "1M", "3M", "6M", "1Y"].map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => setChartRange(r)}
+                        className={`px-2 py-0.5 text-[10px] font-mono rounded ${
+                          chartRange === r
+                            ? "bg-zinc-800 text-white font-bold"
+                            : "text-zinc-500 hover:text-zinc-300"
+                        }`}
+                      >
+                        {r}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <span className="text-[11px] font-mono text-zinc-500">USD Median Daily</span>
               </div>
               <PriceChart

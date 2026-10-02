@@ -108,6 +108,10 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
+- **2026-10-02**:
+  - Implemented exact feature: price history chart (median 1W/1M/3M/6M/1Y).
+  - Updated `/api/market/predict/route.ts` to accept a `range` parameter and filter price history accordingly.
+  - Added chart range state (`chartRange`) and toggle buttons to `ItemDetailModal.tsx`.
 - **2026-09-23**:
   - Implemented Buying Flow with cart state management.
   - Added Add to Cart UI component and integrated globally with CartContext.
