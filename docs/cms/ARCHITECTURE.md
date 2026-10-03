@@ -41,6 +41,10 @@ fetch('/api/cms/ai-draft', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  body: JSON.stringify({
+    topic: 'Recent Market Trends',
+    language: 'en'
+  })
 }).then(res => res.json()).then(console.log);
 ```
