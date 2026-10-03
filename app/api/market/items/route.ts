@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
       take: limit,
       include: {
         listings: {
-          where: { status: "ACTIVE" },
+          where: { status: "ACTIVE", isPrivate: false },
           take: 1,
           include: {
             inventoryItem: true,
