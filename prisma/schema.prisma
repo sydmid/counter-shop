@@ -191,6 +191,7 @@ model MarketListing {
   feeRate         Float          @default(0.02) // 2% platform fee
   status          ListingStatus  @default(ACTIVE)
   featured        Boolean        @default(false)
+  isPrivate       Boolean        @default(false)
   views           Int            @default(0)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt

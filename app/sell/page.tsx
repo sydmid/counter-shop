@@ -14,6 +14,7 @@ export default function SellPage() {
   const [listPrice, setListPrice] = useState<string>("");
   const [listStatus, setListStatus] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
 
   // Hardcode demo user's steamId for demonstration (from seed.ts)
   const demoSteamId = "76561198012345678";
@@ -38,7 +39,7 @@ export default function SellPage() {
     fetchInventory();
   }, []);
 
-  const feeRate = parseFloat(listPrice) > 1000 ? 0.06 : 0.08;
+  const feeRate = isPrivate ? 0.02 : (parseFloat(listPrice) > 1000 ? 0.06 : 0.08);
   const youReceive = parseFloat(listPrice) > 0 ? parseFloat(listPrice) * (1 - feeRate) : 0;
 
   const handleListForSale = async () => {
@@ -52,6 +53,7 @@ export default function SellPage() {
         body: JSON.stringify({
           inventoryItemId: selectedItem.inventoryId,
           price: parseFloat(listPrice),
+          isPrivate,
         }),
       });
       const data = await res.json();
@@ -190,6 +192,25 @@ export default function SellPage() {
                   </div>
                 </div>
 
+                <div className="flex items-center space-x-2 mt-2">
+                  <input
+                    type="checkbox"
+                    id="isPrivate"
+                    checked={isPrivate}
+                    onChange={(e) => setIsPrivate(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-zinc-950 border-zinc-700 rounded focus:ring-blue-500"
+                  />
+                  <label htmlFor="isPrivate" className="text-sm font-medium text-zinc-300 cursor-pointer flex items-center">
+                    Private Listing (2% fee)
+                    <div className="group relative ml-1 cursor-help inline-block">
+                      <Info className="w-3.5 h-3.5 text-zinc-500" />
+                      <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-zinc-800 text-xs text-zinc-300 rounded shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                        Private listings are not shown on the market and can only be bought via a direct link.
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
                 <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 space-y-3">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-zinc-400">Listing Price</span>
@@ -201,7 +222,7 @@ export default function SellPage() {
                       <div className="group relative ml-1 cursor-help">
                         <Info className="w-3.5 h-3.5 text-zinc-500" />
                         <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-zinc-800 text-xs text-zinc-300 rounded shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-                          Standard fee is 8%. Reduced to 6% for items priced over $1000.
+                          Standard fee is 8%. Reduced to 6% for items priced over $1000. Private sales have a 2% fee.
                         </div>
                       </div>
                     </span>

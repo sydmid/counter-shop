@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { inventoryItemId, price } = body;
+    const { inventoryItemId, price, isPrivate } = body;
 
     // Simulate Auth - Ensure demoUser is selling for demonstration
     const steamId = "76561198012345678";
@@ -42,7 +42,8 @@ export async function POST(req: NextRequest) {
 
     // Calculate dynamic fee exactly at > 1000
     // "Reduced to 6% for items > $1000" means exactly $1000 remains at 8%
-    const feeRate = price > 1000 ? 0.06 : 0.08;
+    // Private sales have a 2% fee.
+    const feeRate = isPrivate ? 0.02 : (price > 1000 ? 0.06 : 0.08);
 
     // Use a transaction to ensure no duplicates are created concurrently
     const listing = await prisma.$transaction(async (tx) => {
@@ -65,7 +66,8 @@ export async function POST(req: NextRequest) {
            price: parseFloat(price.toFixed(2)),
            feeRate: feeRate,
            status: "ACTIVE",
-           featured: price > 1000,
+           featured: price > 1000 && !isPrivate,
+           isPrivate: isPrivate || false,
          }
        });
     });

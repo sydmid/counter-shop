@@ -186,3 +186,10 @@ For each day:
   - Removed remaining references to non-custodial features (`TRADER` role, `ArbitrageDeal` model, `ArbitrageOpportunity` type, `ChatMessage` model, etc.).
   - Updated `prisma/schema.prisma`, `prisma/seed.ts`, `types/market.ts`, `components/admin/AdminAnalytics.tsx`, `app/dashboard/page.tsx`, and `app/api/auth/steam/return/route.ts` to reflect the clean custodial marketplace architecture.
   - Ensured Next.js build (`npm run build`) and tests pass successfully.
+
+- **2026-10-03**:
+  - Implemented Private sales option.
+  - Added `isPrivate` boolean flag to `MarketListing` model in Prisma.
+  - Updated `/sell` frontend to include a Private Listing toggle (reducing fee to 2%).
+  - Updated `/api/sell` endpoint to handle `isPrivate` payload, calculate the 2% fee, and save it to the DB.
+  - Excluded private listings from public item queries in `/api/market/items`.
