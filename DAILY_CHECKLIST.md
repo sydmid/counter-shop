@@ -193,3 +193,8 @@ For each day:
   - Updated `/sell` frontend to include a Private Listing toggle (reducing fee to 2%).
   - Updated `/api/sell` endpoint to handle `isPrivate` payload, calculate the 2% fee, and save it to the DB.
   - Excluded private listings from public item queries in `/api/market/items`.
+
+- **2026-10-04**:
+  - Implemented High Trustpilot rating (4.8–4.9/5 from 35,000+ reviews).
+  - Added Trustpilot rating component to `app/page.tsx` beneath the hero section's trusted badge.
+  - Added Trustpilot rating to `components/layout/Footer.tsx` along with API latency.

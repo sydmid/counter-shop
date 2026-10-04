@@ -11,7 +11,8 @@ import {
   Cpu, 
   ChevronRight,
   Flame,
-  Globe2
+  Globe2,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -33,7 +34,21 @@ export default function HomePage() {
             <span>Trusted by over 35,000+ users</span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
+          <div className="flex items-center justify-center space-x-1 mt-2 text-sm text-zinc-300">
+            <span className="font-semibold text-white mr-1">Excellent</span>
+            <div className="flex space-x-0.5">
+              <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
+              <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
+              <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
+              <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
+              <Star className="w-4 h-4 text-emerald-400 fill-emerald-400 opacity-80" />
+            </div>
+            <span className="ml-2">
+              <strong className="text-white">4.8–4.9</strong> out of 5 based on <strong className="text-white">35,000+</strong> reviews on <strong>Trustpilot</strong>
+            </span>
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight mt-6">
             Buy & Sell CS2 Skins –{" "}
             <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-amber-400 bg-clip-text text-transparent">
               Easy and Secure with Skinport

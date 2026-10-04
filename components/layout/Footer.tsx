@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { Shield, Github, Globe, Server, CheckCircle2 } from "lucide-react";
+import { Shield, Github, Globe, Server, CheckCircle2, Star } from "lucide-react";
 
 export function Footer() {
   return (
@@ -16,12 +16,22 @@ export function Footer() {
           <p className="text-zinc-400 text-xs leading-relaxed max-w-md">
             Skinport GmbH, Stuttgart, Germany (registered 2018). Buy & Sell CS2 Skins – Easy and Secure with Skinport. The premier custodial marketplace for CS2, Dota 2, Rust, and TF2.
           </p>
-          <div className="flex items-center space-x-4 pt-1 text-zinc-500">
-            <span className="flex items-center text-emerald-400 font-mono text-[11px]">
-              <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> All Systems Operational
-            </span>
-            <span>•</span>
-            <span className="font-mono text-[11px]">Sub-50ms API Latency</span>
+          <div className="flex flex-col space-y-2 pt-1 text-zinc-500">
+            <div className="flex items-center space-x-4">
+              <span className="flex items-center text-emerald-400 font-mono text-[11px]">
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> All Systems Operational
+              </span>
+              <span>•</span>
+              <span className="font-mono text-[11px]">Sub-50ms API Latency</span>
+            </div>
+            <div className="flex items-center space-x-1 text-[11px] text-zinc-400">
+              <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+              <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+              <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+              <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+              <Star className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400 opacity-80" />
+              <span className="ml-1">Trustpilot rating 4.8–4.9/5 from 35,000+ reviews</span>
+            </div>
           </div>
         </div>
 
