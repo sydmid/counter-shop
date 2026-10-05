@@ -1,50 +1,12 @@
-# Architecture Documentation: CMS and Database Separation
+# CMS Architecture
 
-This document outlines the architectural separation of concerns between our core marketplace data and our editorial content, specifically focusing on database schemas and data retrieval in Next.js.
+## Prisma vs Payload Data Separation
+This application utilizes Prisma for core transactional marketplace operations (Trades, Inventory, Users) and Payload CMS for editorial content (Articles, Categories, CMS Users). These two systems are kept completely isolated.
 
-## Database Separation: Prisma vs. Payload
+## DB Schemas (public vs cms)
+Both systems share the same PostgreSQL instance but utilize different schemas to ensure safety:
+- **Prisma** uses the default `public` schema.
+- **Payload CMS** uses a dedicated `cms` schema. This is configured via the `CMS_DATABASE_URL` environment variable (e.g., `postgresql://user:pass@host:5432/db?schema=cms`), ensuring that Prisma's `db push` or migrations do not accidentally destroy CMS data.
 
-To maintain a secure, robust, and clean architecture, we strictly separate transactional marketplace data from editorial content within our PostgreSQL database.
-
-*   **Transactional State (Prisma + PostgreSQL):** Core marketplace operations such as Users, InventoryItems, MarketListings, and Trades are fully managed by Prisma. Prisma maps its models to the default `public` schema in the PostgreSQL database. This data represents the critical business logic of the application.
-*   **Editorial State (Payload + PostgreSQL):** All editorial and content management operations, including Articles, Categories, and CMS Users, are managed by Payload CMS. To prevent Prisma's automated commands (like `db push` or migrations) from accidentally altering or destroying CMS data, Payload utilizes the `@payloadcms/db-postgres` adapter configured to use a dedicated, isolated schema named `cms`.
-
-### Configuration details:
-*   The connection for Prisma is typically defined via `DATABASE_URL` mapping to the `public` schema.
-*   The connection for Payload is defined explicitly via `CMS_DATABASE_URL`, which appends `?schema=cms` to the connection string, ensuring Payload only interacts with its designated schema.
-
-## Next.js Integration: Using `getPayload`
-
-We leverage Next.js 15 App Router natively with Payload (v3.0). To ensure secure and efficient access to editorial content without unnecessarily exposing APIs or impacting the core marketplace logic, Next.js routes use the Local API provided by Payload.
-
-Instead of making HTTP requests to external endpoints, server-side routes directly instantiate the Payload instance using `getPayload({ config: configPromise })`.
-
-### Examples in Codebase:
-
-*   **Blog Listing (`app/blog/page.tsx`):** Retrieves the published articles list locally.
-*   **Single Article (`app/blog/[slug]/page.tsx`):** Fetches the specific article data dynamically based on the slug.
-*   **AI Draft API (`app/api/cms/ai-draft/route.ts`):** Creates AI-generated drafts by interacting directly with the Payload local API, ensuring rapid processing while maintaining the security of the internal database connection.
-
-By using `getPayload` locally, we avoid the overhead of network requests within the server and ensure our Next.js frontend is tightly integrated with the CMS backend securely.
-## Security & Access Control
-
-Endpoints exposed under the `/api/cms/` path are secured to prevent unauthorized access. The system uses Payload CMS's built-in authentication system.
-
-### Testing the AI Draft Endpoint
-
-The `/api/cms/ai-draft` endpoint requires an authenticated user session with either `admin` or `editor` roles to function. Unauthorized requests will be rejected with a `401 Unauthorized` or `403 Forbidden` response.
-
-If you are developing locally, you can trigger this endpoint via the browser console while logged in to the Payload admin dashboard:
-
-```javascript
-fetch('/api/cms/ai-draft', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    topic: 'Recent Market Trends',
-    language: 'en'
-  })
-}).then(res => res.json()).then(console.log);
-```
+## How `getPayload` is Used in Next Routes
+Payload CMS v3.0 is integrated natively with the Next.js 15 App Router (`@payloadcms/next`). We retrieve the initialized Payload instance inside Next.js server components and route handlers using `getPayload({ config: configPromise })`. This provides a local API that can be used to query and mutate CMS content securely, avoiding network overhead.
