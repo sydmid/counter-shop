@@ -198,3 +198,15 @@ For each day:
   - Implemented High Trustpilot rating (4.8–4.9/5 from 35,000+ reviews).
   - Added Trustpilot rating component to `app/page.tsx` beneath the hero section's trusted badge.
   - Added Trustpilot rating to `components/layout/Footer.tsx` along with API latency.
+
+## Day 5: Harden access control & sanitize public queries
+
+### Actions Taken
+- Updated `Articles` collection `access.read` logic to grant default access to `admin`, `editor`, and `author` roles. Unauthenticated users are restricted to fetching articles where `status` is `published` AND `publishedAt` is in the past or present.
+- Patched `/blog` and `/blog/[slug]` route `getPayload` queries to explicitly pass `overrideAccess: false`. This ensures the Payload local API conforms exactly to the same rigorous access controls used by REST API or GraphQL endpoints.
+
+### Verification
+- `npm run lint` & `npx tsc --noEmit` checks passed successfully.
+- Production build works (`npm run build`).
+- Runtime smoke check via `./scripts/smoke.sh` completed without errors.
+- Unauthenticated requests properly return 404 for drafted articles, rendering them invisible.

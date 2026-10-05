@@ -14,7 +14,17 @@ export const Articles: CollectionConfig = {
     useAsTitle: 'title',
   },
   access: {
-    read: () => true, // Everyone can read (frontend). In a real scenario we'd restrict drafts.
+    read: ({ req: { user } }: any) => {
+      if (user && ['admin', 'editor', 'author'].includes(user.role)) {
+        return true;
+      }
+      return {
+        and: [
+          { status: { equals: 'published' } },
+          { publishedAt: { less_than_equal: new Date().toISOString() } },
+        ]
+      } as any;
+    },
     create: isAuthorOrHigher,
     update: isAuthorOrHigher, // Authors can update. We could restrict them to their own articles only.
     delete: isAdminOrEditor,
