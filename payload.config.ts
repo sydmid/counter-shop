@@ -27,6 +27,7 @@ export default buildConfig({
   ],
   secret: process.env.PAYLOAD_SECRET || 'fallback-secret',
   db: postgresAdapter({
+    schemaName: 'cms',
     pool: {
       connectionString: process.env.CMS_DATABASE_URL || 'postgres://postgres:postgrespassword@localhost:5432/counter_shop?schema=cms',
     },
