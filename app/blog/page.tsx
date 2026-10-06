@@ -13,8 +13,14 @@ export default async function BlogIndex() {
     const payload = await getPayload({ config: configPromise });
     const { docs } = await payload.find({
       collection: 'articles',
-      where: { status: { equals: 'published' } },
+      where: {
+        and: [
+          { status: { equals: 'published' } },
+          { publishedAt: { less_than_equal: new Date().toISOString() } }
+        ]
+      },
       sort: '-publishedAt',
+      overrideAccess: false,
     });
     articles = docs;
   } catch (e) {

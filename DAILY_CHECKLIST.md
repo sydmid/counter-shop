@@ -169,3 +169,45 @@ For each day:
 - **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
 - **2026-09-27**:
   - Replicated Core Site Identity on home page, navigation, and footer by removing P2P references, adding IEM event banner, and updating Skinport branding.
+  - Replicated Core Site Identity on home page, navigation, and footer, adding IEM event banner, and updating Skinport branding.
+- **$(date +"%Y-%m-%d")**:
+  - Replicated Skinport exact feature: Custodial marketplace (not P2P).
+  - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
+  - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
+  - Updated `app/dota2/page.tsx`, `app/layout.tsx`, `README.md`, `prisma/seed.ts` and `components/market/ItemDetailModal.tsx` to remove non-custodial components and references.
+- **2026-09-30**:
+  - Task: Day 3: Secure /api/cms/ai-draft to prevent public abuse.
+  - Implemented Payload CMS authentication requirement on `/api/cms/ai-draft`.
+  - Added role check for `admin` and `editor` roles before allowing draft generation.
+  - Returns `401 Unauthorized` for unauthenticated requests and `403 Forbidden` for unauthorized roles.
+  - Added testing documentation and a dev-only curl snippet to `docs/cms/ARCHITECTURE.md`.
+  - Ran `npm run lint`, `npm run build`, and `npm run smoke` to ensure code changes have not introduced regressions.
+
+- **2026-10-01**:
+  - Removed remaining references to non-custodial features (`TRADER` role, `ArbitrageDeal` model, `ArbitrageOpportunity` type, `ChatMessage` model, etc.).
+  - Updated `prisma/schema.prisma`, `prisma/seed.ts`, `types/market.ts`, `components/admin/AdminAnalytics.tsx`, `app/dashboard/page.tsx`, and `app/api/auth/steam/return/route.ts` to reflect the clean custodial marketplace architecture.
+  - Ensured Next.js build (`npm run build`) and tests pass successfully.
+
+- **2026-10-03**:
+  - Implemented Private sales option.
+  - Added `isPrivate` boolean flag to `MarketListing` model in Prisma.
+  - Updated `/sell` frontend to include a Private Listing toggle (reducing fee to 2%).
+  - Updated `/api/sell` endpoint to handle `isPrivate` payload, calculate the 2% fee, and save it to the DB.
+  - Excluded private listings from public item queries in `/api/market/items`.
+
+- **2026-10-04**:
+  - Implemented High Trustpilot rating (4.8–4.9/5 from 35,000+ reviews).
+  - Added Trustpilot rating component to `app/page.tsx` beneath the hero section's trusted badge.
+  - Added Trustpilot rating to `components/layout/Footer.tsx` along with API latency.
+
+## Day 6: Harden access control & sanitize public queries
+
+### Actions Taken
+- Updated `Articles` collection `access.read` logic to grant default access to `admin`, `editor`, and `author` roles. Unauthenticated users are restricted to fetching articles where `status` is `published` AND `publishedAt` is in the past or present.
+- Patched `/blog` and `/blog/[slug]` route `getPayload` queries to explicitly pass `overrideAccess: false`. This ensures the Payload local API conforms exactly to the same rigorous access controls used by REST API or GraphQL endpoints.
+
+### Verification
+- `npm run lint` & `npx tsc --noEmit` checks passed successfully.
+- Production build works (`npm run build`).
+- Runtime smoke check via `./scripts/smoke.sh` completed without errors.
+- Unauthenticated requests properly return 404 for drafted articles, rendering them invisible.
