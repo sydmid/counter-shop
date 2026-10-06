@@ -7,7 +7,7 @@ This document is structured as a **daily build checklist** for an autonomous age
 The document is kept in Markdown for easy parsing by an AI coder. All sections are exhaustive based on live site inspection (homepage, market, sell page, full FAQ, support, blog, and related pages) as of 17 September 2026. Features are listed with exact implementation requirements.
 
 ### 1. Core Site Identity & Branding
-- **Company**: Skinport GmbH, Stuttgart, Germany (registered 2018). Custodial marketplace .
+- **Company**: Skinport GmbH, Stuttgart, Germany (registered 2018). Custodial marketplace (not P2P).
 - **Tagline & Hero**: “Buy & Sell CS2 Skins – Easy and Secure with Skinport” (multi-language versions: en, ru, sv, pt, fr, de, fi, es).
 - **Platforms**: Primarily CS2; also Dota 2, Rust, TF2. Catalogue of ~3.7 million items with full float/exterior/StatTrak/pattern filters.
 - **Design System**: Clean e-commerce UI (dark/light mode possible via currency switch), responsive, modern marketplace style. Homepage highlights IEM Cologne event, latest offers, and “Hot” / “New” sections.
@@ -108,10 +108,10 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
-- **2026-10-02**:
-  - Implemented exact feature: price history chart (median 1W/1M/3M/6M/1Y).
-  - Updated `/api/market/predict/route.ts` to accept a `range` parameter and filter price history accordingly.
-  - Added chart range state (`chartRange`) and toggle buttons to `ItemDetailModal.tsx`.
+- **2026-10-06**:
+  - Implemented exact feature: Promo codes (20% OFF for new users).
+  - Added UI for entering promo codes in `components/cart/CartDrawer.tsx` and calculating the discounted price.
+  - Updated `/api/checkout/route.ts` to accept and validate the promo code (`NEW20` or `NEWUSER20`).
 - **2026-09-23**:
   - Implemented Buying Flow with cart state management.
   - Added Add to Cart UI component and integrated globally with CartContext.
@@ -147,7 +147,7 @@ For each day:
 - **2026-09-26**:
   - Implemented the Blog page (`/blog`) with a responsive grid displaying articles.
   - Updated Top Nav in `Navbar.tsx` to include a Language selector (en, ru, sv, pt, fr, de, fi, es) and aligned navigation links (Market, Sell, Dashboard, Admin, Tools) with a custodial site identity.
-  - Updated `Footer.tsx` to include links to the new Blog page, Terms, Privacy, and FAQ, replacing outdated arbitrary references.
+  - Updated `Footer.tsx` to include links to the new Blog page, Terms, Privacy, and FAQ, replacing outdated arbitrary and P2P references.
   - **Passing checks:**
     - `npm run build` executed successfully and verified the new route is statically prerendered correctly.
     - `npm run test` executed successfully (no tests found).
@@ -168,33 +168,4 @@ For each day:
 - **Status:** Integrated safely and successfully built.
 - **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
 - **2026-09-27**:
-  - Replicated Core Site Identity on home page, navigation, and footer, adding IEM event banner, and updating Skinport branding.
-- **$(date +"%Y-%m-%d")**:
-  - Replicated Skinport exact feature: Custodial marketplace (not P2P).
-  - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
-  - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
-  - Updated `app/dota2/page.tsx`, `app/layout.tsx`, `README.md`, `prisma/seed.ts` and `components/market/ItemDetailModal.tsx` to remove non-custodial components and references.
-- **2026-09-30**:
-  - Task: Day 3: Secure /api/cms/ai-draft to prevent public abuse.
-  - Implemented Payload CMS authentication requirement on `/api/cms/ai-draft`.
-  - Added role check for `admin` and `editor` roles before allowing draft generation.
-  - Returns `401 Unauthorized` for unauthenticated requests and `403 Forbidden` for unauthorized roles.
-  - Added testing documentation and a dev-only curl snippet to `docs/cms/ARCHITECTURE.md`.
-  - Ran `npm run lint`, `npm run build`, and `npm run smoke` to ensure code changes have not introduced regressions.
-
-- **2026-10-01**:
-  - Removed remaining references to non-custodial features (`TRADER` role, `ArbitrageDeal` model, `ArbitrageOpportunity` type, `ChatMessage` model, etc.).
-  - Updated `prisma/schema.prisma`, `prisma/seed.ts`, `types/market.ts`, `components/admin/AdminAnalytics.tsx`, `app/dashboard/page.tsx`, and `app/api/auth/steam/return/route.ts` to reflect the clean custodial marketplace architecture.
-  - Ensured Next.js build (`npm run build`) and tests pass successfully.
-
-- **2026-10-03**:
-  - Implemented Private sales option.
-  - Added `isPrivate` boolean flag to `MarketListing` model in Prisma.
-  - Updated `/sell` frontend to include a Private Listing toggle (reducing fee to 2%).
-  - Updated `/api/sell` endpoint to handle `isPrivate` payload, calculate the 2% fee, and save it to the DB.
-  - Excluded private listings from public item queries in `/api/market/items`.
-
-- **2026-10-04**:
-  - Implemented High Trustpilot rating (4.8–4.9/5 from 35,000+ reviews).
-  - Added Trustpilot rating component to `app/page.tsx` beneath the hero section's trusted badge.
-  - Added Trustpilot rating to `components/layout/Footer.tsx` along with API latency.
+  - Replicated Core Site Identity on home page, navigation, and footer by removing P2P references, adding IEM event banner, and updating Skinport branding.

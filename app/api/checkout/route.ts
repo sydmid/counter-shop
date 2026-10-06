@@ -18,10 +18,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingIds, paymentMethod } = await req.json();
+    const { listingIds, paymentMethod, promoCode } = await req.json();
 
     if (!listingIds || !Array.isArray(listingIds) || listingIds.length === 0) {
       return NextResponse.json({ success: false, error: "No items provided" }, { status: 400 });
+    }
+
+    if (promoCode && !["NEW20", "NEWUSER20"].includes(promoCode)) {
+      return NextResponse.json({ success: false, error: "Invalid promo code" }, { status: 400 });
     }
 
     if (!["CARD", "SEPA", "ACH", "PAYPAL"].includes(paymentMethod)) {
