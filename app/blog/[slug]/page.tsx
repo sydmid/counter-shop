@@ -20,10 +20,14 @@ export async function generateMetadata({ params }: Props) {
     const { docs: articles } = await payload.find({
       collection: 'articles',
       where: {
-        slug: { equals: slug },
-        status: { equals: 'published' },
+        and: [
+          { slug: { equals: slug } },
+          { status: { equals: 'published' } },
+          { publishedAt: { less_than_equal: new Date().toISOString() } }
+        ]
       },
       limit: 1,
+      overrideAccess: false,
     });
 
     if (!articles || articles.length === 0) {
@@ -45,10 +49,14 @@ export default async function BlogPost({ params }: Props) {
     const { docs: articles } = await payload.find({
       collection: 'articles',
       where: {
-        slug: { equals: slug },
-        status: { equals: 'published' },
+        and: [
+          { slug: { equals: slug } },
+          { status: { equals: 'published' } },
+          { publishedAt: { less_than_equal: new Date().toISOString() } }
+        ]
       },
       limit: 1,
+      overrideAccess: false,
     });
 
     if (!articles || articles.length === 0) {
