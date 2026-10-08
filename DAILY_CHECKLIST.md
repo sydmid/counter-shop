@@ -210,3 +210,17 @@ For each day:
 - Production build works (`npm run build`).
 - Runtime smoke check via `./scripts/smoke.sh` completed without errors.
 - Unauthenticated requests properly return 404 for drafted articles, rendering them invisible.
+
+## Day 6: Observability for CMS operations
+
+### Actions Taken
+- **Task:** Make CMS failures diagnosable by adding structured logging around payload initialization, ai-draft endpoint calls, and publish/schedule actions.
+- **Steps:**
+  1. Created `lib/logger.ts` to enforce a standard JSON log format including `timestamp`, `level`, `action`, `outcome`, and a unique `requestId` (using `crypto.randomUUID()`).
+  2. Integrated the custom logger into `/app/blog/page.tsx` and `/app/blog/[slug]/page.tsx` to log successful and failed `getPayload()` calls.
+  3. Integrated the custom logger into `/api/cms/ai-draft/route.ts` to log endpoint execution tracking (starts, payload init failures, rate limits, authorization failures, and successes/failures without exposing sensitive data).
+  4. Added a Payload `afterChange` hook to `payload/collections/Articles.ts` to log `article_published` and `article_scheduled` events when document statuses or publish dates are updated.
+- **Verification:**
+  - `npm run lint` & `npx tsc --noEmit` checks passed successfully.
+  - Production build works (`npm run build`).
+  - Runtime smoke check via `./scripts/smoke.sh` completed without errors.
