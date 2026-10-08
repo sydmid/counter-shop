@@ -1,11 +1,12 @@
 import crypto from 'crypto';
 
-type LogLevel = 'info' | 'warn' | 'error';
+export type LogLevel = 'info' | 'warn' | 'error';
 
-interface LogPayload {
+export interface LogPayload {
   level: LogLevel;
-  action: string;
-  outcome: string;
+  action?: string;
+  outcome?: string;
+  message?: string;
   requestId?: string;
   [key: string]: any;
 }
@@ -15,17 +16,35 @@ export const logger = {
     const logEntry = {
       timestamp: new Date().toISOString(),
       requestId: payload.requestId || crypto.randomUUID(),
-      ...payload
+      ...payload,
     };
-    console.log(JSON.stringify(logEntry));
+    if (payload.level === 'error') {
+      console.error(JSON.stringify(logEntry));
+    } else if (payload.level === 'warn') {
+      console.warn(JSON.stringify(logEntry));
+    } else {
+      console.log(JSON.stringify(logEntry));
+    }
   },
-  info: (action: string, outcome: string, data: Record<string, any> = {}) => {
-    logger.log({ level: 'info', action, outcome, ...data });
+  info: (actionOrMessage: string, outcomeOrMeta?: string | Record<string, any>, data: Record<string, any> = {}) => {
+    if (typeof outcomeOrMeta === 'string') {
+      logger.log({ level: 'info', action: actionOrMessage, outcome: outcomeOrMeta, ...data });
+    } else {
+      logger.log({ level: 'info', message: actionOrMessage, ...(outcomeOrMeta || {}) });
+    }
   },
-  error: (action: string, outcome: string, data: Record<string, any> = {}) => {
-    logger.log({ level: 'error', action, outcome, ...data });
+  error: (actionOrMessage: string, outcomeOrMeta?: string | Record<string, any>, data: Record<string, any> = {}) => {
+    if (typeof outcomeOrMeta === 'string') {
+      logger.log({ level: 'error', action: actionOrMessage, outcome: outcomeOrMeta, ...data });
+    } else {
+      logger.log({ level: 'error', message: actionOrMessage, ...(outcomeOrMeta || {}) });
+    }
   },
-  warn: (action: string, outcome: string, data: Record<string, any> = {}) => {
-    logger.log({ level: 'warn', action, outcome, ...data });
-  }
+  warn: (actionOrMessage: string, outcomeOrMeta?: string | Record<string, any>, data: Record<string, any> = {}) => {
+    if (typeof outcomeOrMeta === 'string') {
+      logger.log({ level: 'warn', action: actionOrMessage, outcome: outcomeOrMeta, ...data });
+    } else {
+      logger.log({ level: 'warn', message: actionOrMessage, ...(outcomeOrMeta || {}) });
+    }
+  },
 };
