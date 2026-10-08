@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
+import { logger } from '@/lib/logger';
 
 export const revalidate = 60; // Cache invalidation every 60 seconds
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,7 @@ export default async function BlogIndex() {
   let articles: any[] = [];
   try {
     const payload = await getPayload({ config: configPromise });
+    logger.info('payload_init', 'success', { route: '/blog' });
     const { docs } = await payload.find({
       collection: 'articles',
       where: {
@@ -23,7 +25,8 @@ export default async function BlogIndex() {
       overrideAccess: false,
     });
     articles = docs;
-  } catch (e) {
+  } catch (e: any) {
+    logger.error('payload_init', 'failure', { route: '/blog', error: e.message || String(e) });
     console.error("Payload not available at build time for blog page");
   }
 

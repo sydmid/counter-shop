@@ -1,11 +1,50 @@
+import crypto from 'crypto';
+
+export type LogLevel = 'info' | 'warn' | 'error';
+
+export interface LogPayload {
+  level: LogLevel;
+  action?: string;
+  outcome?: string;
+  message?: string;
+  requestId?: string;
+  [key: string]: any;
+}
+
 export const logger = {
-  info: (message: string, meta?: any) => {
-    console.log(JSON.stringify({ level: 'info', message, timestamp: new Date().toISOString(), ...meta }));
+  log: (payload: LogPayload) => {
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      requestId: payload.requestId || crypto.randomUUID(),
+      ...payload,
+    };
+    if (payload.level === 'error') {
+      console.error(JSON.stringify(logEntry));
+    } else if (payload.level === 'warn') {
+      console.warn(JSON.stringify(logEntry));
+    } else {
+      console.log(JSON.stringify(logEntry));
+    }
   },
-  error: (message: string, meta?: any) => {
-    console.error(JSON.stringify({ level: 'error', message, timestamp: new Date().toISOString(), ...meta }));
+  info: (actionOrMessage: string, outcomeOrMeta?: string | Record<string, any>, data: Record<string, any> = {}) => {
+    if (typeof outcomeOrMeta === 'string') {
+      logger.log({ level: 'info', action: actionOrMessage, outcome: outcomeOrMeta, ...data });
+    } else {
+      logger.log({ level: 'info', message: actionOrMessage, ...(outcomeOrMeta || {}) });
+    }
   },
-  warn: (message: string, meta?: any) => {
-    console.warn(JSON.stringify({ level: 'warn', message, timestamp: new Date().toISOString(), ...meta }));
+  error: (actionOrMessage: string, outcomeOrMeta?: string | Record<string, any>, data: Record<string, any> = {}) => {
+    if (typeof outcomeOrMeta === 'string') {
+      logger.log({ level: 'error', action: actionOrMessage, outcome: outcomeOrMeta, ...data });
+    } else {
+      logger.log({ level: 'error', message: actionOrMessage, ...(outcomeOrMeta || {}) });
+    }
+  },
+  warn: (actionOrMessage: string, outcomeOrMeta?: string | Record<string, any>, data: Record<string, any> = {}) => {
+    if (typeof outcomeOrMeta === 'string') {
+      logger.log({ level: 'warn', action: actionOrMessage, outcome: outcomeOrMeta, ...data });
+    } else {
+      logger.log({ level: 'warn', message: actionOrMessage, ...(outcomeOrMeta || {}) });
+    }
   },
 };

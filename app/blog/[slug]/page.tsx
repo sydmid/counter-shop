@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 import { RichText } from '@payloadcms/richtext-lexical/react';
+import { logger } from '@/lib/logger';
 
 export const revalidate = 60;
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,7 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   try {
     const payload = await getPayload({ config: configPromise });
+    logger.info('payload_init', 'success', { route: `/blog/[slug] metadata ${slug}` });
     const { docs: articles } = await payload.find({
       collection: 'articles',
       where: {
@@ -35,7 +37,8 @@ export async function generateMetadata({ params }: Props) {
     }
 
     return { title: `${articles[0].title} | Counter-Shop Blog` };
-  } catch(e) {
+  } catch(e: any) {
+    logger.error('payload_init', 'failure', { route: `/blog/[slug] metadata ${slug}`, error: e.message || String(e) });
     return { title: 'Blog | Counter-Shop' };
   }
 }
@@ -46,6 +49,7 @@ export default async function BlogPost({ params }: Props) {
 
   try {
     const payload = await getPayload({ config: configPromise });
+    logger.info('payload_init', 'success', { route: `/blog/[slug] ${slug}` });
     const { docs: articles } = await payload.find({
       collection: 'articles',
       where: {
@@ -63,7 +67,8 @@ export default async function BlogPost({ params }: Props) {
       notFound();
     }
     article = articles[0];
-  } catch (e) {
+  } catch (e: any) {
+    logger.error('payload_init', 'failure', { route: `/blog/[slug] ${slug}`, error: e.message || String(e) });
     notFound();
   }
 
