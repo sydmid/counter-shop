@@ -12,8 +12,22 @@ export function CartDrawer() {
   const [checkoutStep, setCheckoutStep] = useState<"CART" | "PAYMENT" | "SUCCESS">("CART");
   const [paymentMethod, setPaymentMethod] = useState<string>("CARD");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
 
   if (!isCartOpen) return null;
+
+  const discountAmount = appliedPromo === "NEWUSER20" ? totalPrice * 0.20 : 0;
+  const finalPrice = totalPrice - discountAmount;
+
+  const handleApplyPromo = () => {
+    if (promoInput.toUpperCase() === "NEWUSER20") {
+      setAppliedPromo("NEWUSER20");
+      setPromoInput("");
+    } else {
+      alert("Invalid promo code");
+    }
+  };
 
   const handleCheckout = async () => {
     setIsProcessing(true);
@@ -22,7 +36,7 @@ export function CartDrawer() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingIds, paymentMethod }),
+        body: JSON.stringify({ listingIds, paymentMethod, promoCode: appliedPromo }),
       });
       const data = await res.json();
 
@@ -136,11 +150,42 @@ export function CartDrawer() {
             <div className="space-y-6">
               <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl space-y-4">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-zinc-400">Total Due</span>
-                  <span className="text-xl font-mono font-black text-white">{formatCurrency(totalPrice)}</span>
+                  <span className="text-zinc-400">Subtotal</span>
+                  <span className="text-lg font-mono text-white">{formatCurrency(totalPrice)}</span>
+                </div>
+                {appliedPromo && (
+                  <div className="flex justify-between items-center text-sm text-emerald-400">
+                    <span>Promo ({appliedPromo})</span>
+                    <span className="font-mono">-{formatCurrency(discountAmount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center text-sm pt-2 border-t border-zinc-800">
+                  <span className="text-zinc-400 font-bold">Total Due</span>
+                  <span className="text-xl font-mono font-black text-white">{formatCurrency(finalPrice)}</span>
                 </div>
                 <div className="text-xs text-zinc-500 border-t border-zinc-800 pt-3">
                   Skinport balance is only for sellers and cannot be used for purchases.
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="text-sm font-bold text-white mb-2">Promo Code</div>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={promoInput}
+                    onChange={(e) => setPromoInput(e.target.value)}
+                    placeholder="Enter code (e.g. NEWUSER20)"
+                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={handleApplyPromo}
+                    disabled={!promoInput}
+                    className="text-sm"
+                  >
+                    Apply
+                  </Button>
                 </div>
               </div>
 
@@ -218,7 +263,7 @@ export function CartDrawer() {
                   disabled={isProcessing}
                   className="w-full py-6 text-base font-bold bg-blue-600 hover:bg-blue-500"
                 >
-                  {isProcessing ? "Processing..." : `Pay ${formatCurrency(totalPrice)}`}
+                  {isProcessing ? "Processing..." : `Pay ${formatCurrency(finalPrice)}`}
                 </Button>
                 <Button
                   variant="ghost"

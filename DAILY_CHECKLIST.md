@@ -108,6 +108,10 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
+- **2026-10-08**:
+  - Implemented Promo codes (20% OFF for new users).
+  - Updated `/api/checkout/route.ts` to accept an optional `promoCode` field in the request body, validate "NEWUSER20", and calculate a 20% discount.
+  - Updated `components/cart/CartDrawer.tsx` to add a Promo Code input field, handle applying "NEWUSER20", calculate the discounted `finalPrice`, and pass the promo code to the checkout API call.
 - **2026-10-02**:
   - Implemented exact feature: price history chart (median 1W/1M/3M/6M/1Y).
   - Updated `/api/market/predict/route.ts` to accept a `range` parameter and filter price history accordingly.
