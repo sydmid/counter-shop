@@ -236,3 +236,17 @@ For each day:
   - `npm run lint` & `npx tsc --noEmit` checks passed successfully.
   - Production build works (`npm run build`).
   - Runtime smoke check via `./scripts/smoke.sh` completed without errors.
+
+## Day 7: Pagination for /blog
+
+### Actions Taken
+- **Task:** Implement pagination for the `/blog` route to prevent loading all posts at once.
+- **Steps:**
+  1. Modified `app/blog/page.tsx` to handle `searchParams` (`page` and `limit`).
+  2. Updated the `payload.find()` query to include `page` and `limit` options, parsing from URL search params.
+  3. Added rendering logic for pagination controls (Previous and Next buttons) at the bottom of the article list, utilizing the pagination data returned by `payload.find()` (such as `totalPages`, `hasNextPage`, `hasPrevPage`).
+
+### Verification
+- `npm run lint` & `npx tsc --noEmit` checks passed successfully.
+- Runtime smoke check via `./scripts/smoke.sh` completed without errors.
+- Pre-existing blocker: Production build (`npm run build`) fails with `Error: <Html> should not be imported outside of pages/_document` during static generation (reproduced identically on original `main` branch before these changes).
