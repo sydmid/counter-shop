@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { inventoryItemId, price, isPrivate } = body;
+    const { inventoryItemId, price, isPrivate, country } = body;
+
+    if (country === "UNSUPPORTED") {
+      return NextResponse.json({ success: false, error: "Selling/payouts are region-locked to Adyen-supported countries." }, { status: 403 });
+    }
 
     // Simulate Auth - Ensure demoUser is selling for demonstration
     const steamId = "76561198012345678";
