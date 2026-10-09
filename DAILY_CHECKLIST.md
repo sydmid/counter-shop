@@ -173,7 +173,15 @@ For each day:
 - **Post Code Review fixes:** Wrapped `next.config.ts` with `withPayload`, enabled RichText Lexical renderer in the blog post route, fully integrated custom Dashboard view in `payload.config.ts`, added RBAC functions checking user roles in `CmsUsers` and `Articles` collections, and properly implemented the `/api/cms/ai-draft` endpoint. Build passes successfully.
 - **2026-09-27**:
   - Replicated Core Site Identity on home page, navigation, and footer, adding IEM event banner, and updating Skinport branding.
-- **$(date +"%Y-%m-%d")**:
+- **2026-10-09**:
+  - Implemented exact feature: Region-locked: Selling/payouts limited to Adyen-supported countries.
+  - Added country selection simulator dropdown (DE, US, UNSUPPORTED) to /sell page.
+  - Updated /sell to prevent listings if the user selects an unsupported country.
+  - Added backend validation in /api/sell/route.ts to reject (403) sales from unsupported countries.
+  - **Passing checks:**
+    - `npm run build` and `npm run lint` executed successfully.
+    - Smoke check `./scripts/smoke.sh` passed.
+
   - Replicated Skinport exact feature: Custodial marketplace (not P2P).
   - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
   - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
