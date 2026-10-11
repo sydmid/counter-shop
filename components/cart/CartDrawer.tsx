@@ -12,6 +12,12 @@ export function CartDrawer() {
   const [checkoutStep, setCheckoutStep] = useState<"CART" | "PAYMENT" | "SUCCESS">("CART");
   const [paymentMethod, setPaymentMethod] = useState<string>("CARD");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+
+  const discountRate = appliedPromo ? 0.2 : 0;
+  const finalPrice = totalPrice * (1 - discountRate);
 
   if (!isCartOpen) return null;
 
@@ -22,7 +28,7 @@ export function CartDrawer() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listingIds, paymentMethod }),
+        body: JSON.stringify({ listingIds, paymentMethod, promoCode: appliedPromo }),
       });
       const data = await res.json();
 
@@ -124,6 +130,52 @@ export function CartDrawer() {
                 })}
               </div>
 
+
+              {/* Promo Code */}
+              <div className="bg-zinc-900/60 border border-zinc-800 p-3 rounded-xl space-y-2">
+                <div className="text-sm font-bold text-white">Promo Code</div>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={promoCodeInput}
+                    onChange={(e) => setPromoCodeInput(e.target.value)}
+                    placeholder="Enter code"
+                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors uppercase"
+                    disabled={appliedPromo !== null}
+                  />
+                  {appliedPromo ? (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setAppliedPromo(null);
+                        setPromoCodeInput("");
+                        setPromoError(null);
+                      }}
+                      className="text-red-400 hover:text-red-300 hover:bg-red-400/10 border-red-400/20"
+                    >
+                      Remove
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        const code = promoCodeInput.trim().toUpperCase();
+                        if (code === "NEW20" || code === "NEWUSER20") {
+                          setAppliedPromo(code);
+                          setPromoError(null);
+                        } else {
+                          setPromoError("Invalid promo code");
+                        }
+                      }}
+                      variant="secondary"
+                    >
+                      Apply
+                    </Button>
+                  )}
+                </div>
+                {promoError && <div className="text-xs text-red-400">{promoError}</div>}
+                {appliedPromo && <div className="text-xs text-emerald-400">Promo code applied: 20% OFF!</div>}
+              </div>
+
               {/* Warning about delivery */}
               <div className="bg-blue-950/30 border border-blue-900/50 p-3 rounded-lg text-blue-300 text-xs flex items-start space-x-2">
                 <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -137,7 +189,14 @@ export function CartDrawer() {
               <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl space-y-4">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-zinc-400">Total Due</span>
-                  <span className="text-xl font-mono font-black text-white">{formatCurrency(totalPrice)}</span>
+                  {appliedPromo ? (
+                    <div className="text-right">
+                      <div className="text-sm text-zinc-500 line-through">{formatCurrency(totalPrice)}</div>
+                      <div className="text-xl font-mono text-emerald-400 font-black">{formatCurrency(finalPrice)}</div>
+                    </div>
+                  ) : (
+                    <span className="text-xl font-mono font-black text-white">{formatCurrency(totalPrice)}</span>
+                  )}
                 </div>
                 <div className="text-xs text-zinc-500 border-t border-zinc-800 pt-3">
                   Skinport balance is only for sellers and cannot be used for purchases.
@@ -202,7 +261,14 @@ export function CartDrawer() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm font-bold">
                   <span className="text-zinc-400">Total</span>
-                  <span className="text-xl font-mono text-white">{formatCurrency(totalPrice)}</span>
+                  {appliedPromo ? (
+                    <div className="text-right">
+                      <div className="text-sm text-zinc-500 line-through">{formatCurrency(totalPrice)}</div>
+                      <div className="text-xl font-mono text-emerald-400 font-black">{formatCurrency(finalPrice)}</div>
+                    </div>
+                  ) : (
+                    <span className="text-xl font-mono text-white">{formatCurrency(totalPrice)}</span>
+                  )}
                 </div>
                 <Button
                   onClick={() => setCheckoutStep("PAYMENT")}
@@ -218,7 +284,7 @@ export function CartDrawer() {
                   disabled={isProcessing}
                   className="w-full py-6 text-base font-bold bg-blue-600 hover:bg-blue-500"
                 >
-                  {isProcessing ? "Processing..." : `Pay ${formatCurrency(totalPrice)}`}
+                  {isProcessing ? "Processing..." : `Pay ${formatCurrency(finalPrice)}`}
                 </Button>
                 <Button
                   variant="ghost"
