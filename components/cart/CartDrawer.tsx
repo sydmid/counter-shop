@@ -138,6 +138,52 @@ export function CartDrawer() {
                 })}
               </div>
 
+
+              {/* Promo Code */}
+              <div className="bg-zinc-900/60 border border-zinc-800 p-3 rounded-xl space-y-2">
+                <div className="text-sm font-bold text-white">Promo Code</div>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={promoCodeInput}
+                    onChange={(e) => setPromoCodeInput(e.target.value)}
+                    placeholder="Enter code"
+                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors uppercase"
+                    disabled={appliedPromo !== null}
+                  />
+                  {appliedPromo ? (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setAppliedPromo(null);
+                        setPromoCodeInput("");
+                        setPromoError(null);
+                      }}
+                      className="text-red-400 hover:text-red-300 hover:bg-red-400/10 border-red-400/20"
+                    >
+                      Remove
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        const code = promoCodeInput.trim().toUpperCase();
+                        if (code === "NEW20" || code === "NEWUSER20") {
+                          setAppliedPromo(code);
+                          setPromoError(null);
+                        } else {
+                          setPromoError("Invalid promo code");
+                        }
+                      }}
+                      variant="secondary"
+                    >
+                      Apply
+                    </Button>
+                  )}
+                </div>
+                {promoError && <div className="text-xs text-red-400">{promoError}</div>}
+                {appliedPromo && <div className="text-xs text-emerald-400">Promo code applied: 20% OFF!</div>}
+              </div>
+
               {/* Warning about delivery */}
               <div className="bg-blue-950/30 border border-blue-900/50 p-3 rounded-lg text-blue-300 text-xs flex items-start space-x-2">
                 <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -247,7 +293,14 @@ export function CartDrawer() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm font-bold">
                   <span className="text-zinc-400">Total</span>
-                  <span className="text-xl font-mono text-white">{formatCurrency(totalPrice)}</span>
+                  {appliedPromo ? (
+                    <div className="text-right">
+                      <div className="text-sm text-zinc-500 line-through">{formatCurrency(totalPrice)}</div>
+                      <div className="text-xl font-mono text-emerald-400 font-black">{formatCurrency(finalPrice)}</div>
+                    </div>
+                  ) : (
+                    <span className="text-xl font-mono text-white">{formatCurrency(totalPrice)}</span>
+                  )}
                 </div>
                 <Button
                   onClick={() => setCheckoutStep("PAYMENT")}

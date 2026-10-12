@@ -24,6 +24,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "No items provided" }, { status: 400 });
     }
 
+    if (promoCode && !["NEW20", "NEWUSER20"].includes(promoCode)) {
+      return NextResponse.json({ success: false, error: "Invalid promo code" }, { status: 400 });
+    }
+
     if (!["CARD", "SEPA", "ACH", "PAYPAL"].includes(paymentMethod)) {
       return NextResponse.json({ success: false, error: "Invalid payment method" }, { status: 400 });
     }
