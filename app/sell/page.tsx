@@ -15,6 +15,7 @@ export default function SellPage() {
   const [listStatus, setListStatus] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("DE"); // Default to Germany (Supported)
 
   // Hardcode demo user's steamId for demonstration (from seed.ts)
   const demoSteamId = "76561198012345678";
@@ -43,7 +44,7 @@ export default function SellPage() {
   const youReceive = parseFloat(listPrice) > 0 ? parseFloat(listPrice) * (1 - feeRate) : 0;
 
   const handleListForSale = async () => {
-    if (!selectedItem || !listPrice || !isVerified) return;
+    if (!selectedItem || !listPrice || !isVerified || selectedCountry === "UNSUPPORTED") return;
     setListStatus("listing...");
 
     try {
@@ -54,6 +55,7 @@ export default function SellPage() {
           inventoryItemId: selectedItem.inventoryId,
           price: parseFloat(listPrice),
           isPrivate,
+          country: selectedCountry,
         }),
       });
       const data = await res.json();
@@ -85,16 +87,53 @@ export default function SellPage() {
         </div>
 
         {/* Adyen KYC Status */}
-        <div className={`flex items-center space-x-3 border px-4 py-3 rounded-xl ${isVerified ? 'bg-emerald-950/30 border-emerald-500/30' : 'bg-amber-950/30 border-amber-500/30'}`}>
-          <div className={`p-2 rounded-full ${isVerified ? 'bg-emerald-500/20' : 'bg-amber-500/20'}`}>
-            <ShieldCheck className={`w-5 h-5 ${isVerified ? 'text-emerald-400' : 'text-amber-400'}`} />
+        <div className="flex flex-col space-y-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Region (Simulation)</span>
+            <select
+              value={selectedCountry}
+              onChange={(e) => {
+                setSelectedCountry(e.target.value);
+                if (e.target.value === "UNSUPPORTED") {
+                  setIsVerified(false);
+                }
+              }}
+              className="bg-zinc-900 border border-zinc-700 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-blue-500"
+            >
+              <option value="DE">Germany (Supported)</option>
+              <option value="US">United States (Supported)</option>
+              <option value="UNSUPPORTED">Unsupported Country</option>
+            </select>
           </div>
-          <div>
-            <div className={`text-xs font-semibold flex items-center space-x-1 ${isVerified ? 'text-emerald-400' : 'text-amber-400'}`}>
-              <span>{isVerified ? 'KYC Identity Verified (Simulated)' : 'KYC Verification Required'}</span>
-              {isVerified && <CheckCircle2 className="w-3 h-3" />}
+          <div className={`flex items-center space-x-3 border px-4 py-3 rounded-xl ${
+            selectedCountry === "UNSUPPORTED" ? 'bg-red-950/30 border-red-500/30' :
+            isVerified ? 'bg-emerald-950/30 border-emerald-500/30' : 'bg-amber-950/30 border-amber-500/30'
+          }`}>
+            <div className={`p-2 rounded-full ${
+              selectedCountry === "UNSUPPORTED" ? 'bg-red-500/20' :
+              isVerified ? 'bg-emerald-500/20' : 'bg-amber-500/20'
+            }`}>
+              {selectedCountry === "UNSUPPORTED" ? (
+                <AlertCircle className="w-5 h-5 text-red-400" />
+              ) : (
+                <ShieldCheck className={`w-5 h-5 ${isVerified ? 'text-emerald-400' : 'text-amber-400'}`} />
+              )}
             </div>
-            <div className="text-[10px] text-zinc-400">Powered by Adyen • Bank Linked (SEPA)</div>
+            <div>
+              <div className={`text-xs font-semibold flex items-center space-x-1 ${
+                selectedCountry === "UNSUPPORTED" ? 'text-red-400' :
+                isVerified ? 'text-emerald-400' : 'text-amber-400'
+              }`}>
+                <span>
+                  {selectedCountry === "UNSUPPORTED" ? 'Region Not Supported' :
+                   isVerified ? 'KYC Identity Verified (Simulated)' : 'KYC Verification Required'}
+                </span>
+                {isVerified && selectedCountry !== "UNSUPPORTED" && <CheckCircle2 className="w-3 h-3" />}
+              </div>
+              <div className="text-[10px] text-zinc-400">
+                {selectedCountry === "UNSUPPORTED" ? 'Selling/payouts are limited to Adyen-supported countries.' : 'Powered by Adyen • Bank Linked (SEPA)'}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -245,10 +284,10 @@ export default function SellPage() {
 
                 <Button
                   onClick={handleListForSale}
-                  disabled={listStatus === "listing..." || parseFloat(listPrice || "0") <= 0 || !isVerified}
-                  className="w-full font-bold py-6 text-base bg-blue-600 hover:bg-blue-500"
+                  disabled={listStatus === "listing..." || parseFloat(listPrice || "0") <= 0 || !isVerified || selectedCountry === "UNSUPPORTED"}
+                  className="w-full font-bold py-6 text-base bg-blue-600 hover:bg-blue-500 disabled:opacity-50"
                 >
-                  {listStatus === "listing..." ? "Creating Listing & Bot Trade..." : "Deposit & List for Sale"}
+                  {selectedCountry === "UNSUPPORTED" ? "Region Unsupported" : listStatus === "listing..." ? "Creating Listing & Bot Trade..." : "Deposit & List for Sale"}
                 </Button>
 
                 {listStatus === "success" && (

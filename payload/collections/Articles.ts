@@ -1,4 +1,6 @@
 import { CollectionConfig } from 'payload';
+import { logger } from '../../lib/logger';
+import crypto from 'crypto';
 
 const isAdminOrEditor = ({ req: { user } }: any) => {
   return user && (user.role === 'admin' || user.role === 'editor');
@@ -28,6 +30,23 @@ export const Articles: CollectionConfig = {
     create: isAuthorOrHigher,
     update: isAuthorOrHigher, // Authors can update. We could restrict them to their own articles only.
     delete: isAdminOrEditor,
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, operation }) => {
+        if (operation === 'update') {
+          const requestId = crypto.randomUUID();
+
+          if (doc.status === 'published' && previousDoc.status !== 'published') {
+            logger.info('article_published', 'success', { requestId, articleId: doc.id, slug: doc.slug });
+          }
+
+          if (doc.publishedAt && doc.publishedAt !== previousDoc.publishedAt) {
+            logger.info('article_scheduled', 'success', { requestId, articleId: doc.id, slug: doc.slug, publishedAt: doc.publishedAt });
+          }
+        }
+      }
+    ],
   },
   fields: [
     {

@@ -108,10 +108,14 @@ For each day:
 - Example today: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
 
 ### Execution Logs
-- **2026-10-06**:
-  - Implemented exact feature: Promo codes (20% OFF for new users).
-  - Added UI for entering promo codes in `components/cart/CartDrawer.tsx` and calculating the discounted price.
-  - Updated `/api/checkout/route.ts` to accept and validate the promo code (`NEW20` or `NEWUSER20`).
+- **2026-10-08**:
+  - Implemented Promo codes (20% OFF for new users).
+  - Updated `/api/checkout/route.ts` to accept an optional `promoCode` field in the request body, validate "NEWUSER20", and calculate a 20% discount.
+  - Updated `components/cart/CartDrawer.tsx` to add a Promo Code input field, handle applying "NEWUSER20", calculate the discounted `finalPrice`, and pass the promo code to the checkout API call.
+- **2026-10-02**:
+  - Implemented exact feature: price history chart (median 1W/1M/3M/6M/1Y).
+  - Updated `/api/market/predict/route.ts` to accept a `range` parameter and filter price history accordingly.
+  - Added chart range state (`chartRange`) and toggle buttons to `ItemDetailModal.tsx`.
 - **2026-09-23**:
   - Implemented Buying Flow with cart state management.
   - Added Add to Cart UI component and integrated globally with CartContext.
@@ -170,7 +174,15 @@ For each day:
 - **2026-09-27**:
   - Replicated Core Site Identity on home page, navigation, and footer by removing P2P references, adding IEM event banner, and updating Skinport branding.
   - Replicated Core Site Identity on home page, navigation, and footer, adding IEM event banner, and updating Skinport branding.
-- **$(date +"%Y-%m-%d")**:
+- **2026-10-09**:
+  - Implemented exact feature: Region-locked: Selling/payouts limited to Adyen-supported countries.
+  - Added country selection simulator dropdown (DE, US, UNSUPPORTED) to /sell page.
+  - Updated /sell to prevent listings if the user selects an unsupported country.
+  - Added backend validation in /api/sell/route.ts to reject (403) sales from unsupported countries.
+  - **Passing checks:**
+    - `npm run build` and `npm run lint` executed successfully.
+    - Smoke check `./scripts/smoke.sh` passed.
+
   - Replicated Skinport exact feature: Custodial marketplace (not P2P).
   - Cleaned up the codebase to remove references to non-custodial features such as P2P Trading and Arbitrage Bots.
   - Deleted `app/trade/page.tsx`, `components/trade/TradeRoom.tsx`, `components/chat/TradeChat.tsx`, `app/arbitrage/page.tsx`, `components/arbitrage/ArbitrageBotDashboard.tsx`, `lib/arbitrage.ts`, `app/api/trade/p2p/route.ts`, `app/api/trade/create/route.ts`, `app/api/arbitrage/route.ts`, `lib/trade-manager.ts`.
@@ -211,3 +223,37 @@ For each day:
 - Production build works (`npm run build`).
 - Runtime smoke check via `./scripts/smoke.sh` completed without errors.
 - Unauthenticated requests properly return 404 for drafted articles, rendering them invisible.
+
+## Day 6: Observability for CMS operations
+
+### Actions Taken
+- **Task:** Make CMS failures diagnosable by adding structured logging around payload initialization, ai-draft endpoint calls, and publish/schedule actions.
+- **Steps:**
+  1. Created `lib/logger.ts` to enforce a standard JSON log format including `timestamp`, `level`, `action`, `outcome`, and a unique `requestId` (using `crypto.randomUUID()`).
+  2. Integrated the custom logger into `/app/blog/page.tsx` and `/app/blog/[slug]/page.tsx` to log successful and failed `getPayload()` calls.
+  3. Integrated the custom logger into `/api/cms/ai-draft/route.ts` to log endpoint execution tracking (starts, payload init failures, rate limits, authorization failures, and successes/failures without exposing sensitive data).
+  4. Added a Payload `afterChange` hook to `payload/collections/Articles.ts` to log `article_published` and `article_scheduled` events when document statuses or publish dates are updated.
+- **Verification:**
+  - `npm run lint` & `npx tsc --noEmit` checks passed successfully.
+  - Production build works (`npm run build`).
+  - Runtime smoke check via `./scripts/smoke.sh` completed without errors.
+
+## Day 7: Pagination for /blog
+
+### Actions Taken
+- **Task:** Implement pagination for the `/blog` route to prevent loading all posts at once.
+- **Steps:**
+  1. Modified `app/blog/page.tsx` to handle `searchParams` (`page` and `limit`).
+  2. Updated the `payload.find()` query to include `page` and `limit` options, parsing from URL search params.
+  3. Added rendering logic for pagination controls (Previous and Next buttons) at the bottom of the article list, utilizing the pagination data returned by `payload.find()` (such as `totalPages`, `hasNextPage`, `hasPrevPage`).
+
+### Verification
+- `npm run lint` & `npx tsc --noEmit` checks passed successfully.
+- Runtime smoke check via `./scripts/smoke.sh` completed without errors.
+- Pre-existing blocker: Production build (`npm run build`) fails with `Error: <Html> should not be imported outside of pages/_document` during static generation (reproduced identically on original `main` branch before these changes).
+
+- **2026-10-12**:
+  - Task: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
+  - Verified Skinport Plus banner is already in `app/market/page.tsx` and 360° Wear Preview is already in `components/market/ItemDetailModal.tsx`.
+  - Updated `components/market/MarketFilters.tsx` category filters to exactly match the target list ("Pistols, Rifles, SMGs, Heavy, Agents, Charming, Stickers, Containers, Keys, Patches, Graffiti, Collectibles, Passes, Music Kits").
+  - Updated `/api/market/items/route.ts` to map plural UI category names back to the database's singular category names.
