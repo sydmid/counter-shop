@@ -29,7 +29,21 @@ export async function GET(req: NextRequest) {
   }
 
   if (category && category !== "ALL") {
-    whereClause.category = category;
+    const categoryMap: Record<string, string> = {
+      Pistols: "Pistol",
+      Rifles: "Rifle",
+      SMGs: "SMG",
+      Agents: "Agent",
+      Charming: "Charm",
+      Stickers: "Sticker",
+      Containers: "Container",
+      Keys: "Key",
+      Patches: "Patch",
+      Collectibles: "Collectible",
+      Passes: "Pass",
+      "Music Kits": "Music Kit",
+    };
+    whereClause.category = categoryMap[category] || category;
   }
 
   if (rarity && rarity !== "ALL") {

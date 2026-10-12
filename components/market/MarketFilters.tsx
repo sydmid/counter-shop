@@ -31,7 +31,7 @@ export function MarketFilters({
   sort,
   onSortChange,
 }: MarketFiltersProps) {
-  const cs2Categories = ["ALL", "Knife", "Gloves", "Pistol", "Rifle", "SMG", "Heavy", "Agent", "Charm", "Sticker", "Container", "Key", "Patch", "Graffiti", "Collectible", "Pass", "Music Kit"];
+  const cs2Categories = ["ALL", "Knife", "Gloves", "Pistols", "Rifles", "SMGs", "Heavy", "Agents", "Charming", "Stickers", "Containers", "Keys", "Patches", "Graffiti", "Collectibles", "Passes", "Music Kits"];
   const dotaCategories = ["ALL", "Hero Item", "Courier", "Ward", "Music"];
 
   const categories = appId === 730 ? cs2Categories : dotaCategories;

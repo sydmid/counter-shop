@@ -250,3 +250,9 @@ For each day:
 - `npm run lint` & `npx tsc --noEmit` checks passed successfully.
 - Runtime smoke check via `./scripts/smoke.sh` completed without errors.
 - Pre-existing blocker: Production build (`npm run build`) fails with `Error: <Html> should not be imported outside of pages/_document` during static generation (reproduced identically on original `main` branch before these changes).
+
+- **2026-10-12**:
+  - Task: Implement “Skinport Plus-style extension integration + full category filters + wear preview gallery” on our /market page.
+  - Verified Skinport Plus banner is already in `app/market/page.tsx` and 360° Wear Preview is already in `components/market/ItemDetailModal.tsx`.
+  - Updated `components/market/MarketFilters.tsx` category filters to exactly match the target list ("Pistols, Rifles, SMGs, Heavy, Agents, Charming, Stickers, Containers, Keys, Patches, Graffiti, Collectibles, Passes, Music Kits").
+  - Updated `/api/market/items/route.ts` to map plural UI category names back to the database's singular category names.
