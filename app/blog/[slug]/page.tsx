@@ -1,5 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 import { RichText } from '@payloadcms/richtext-lexical/react';
@@ -77,6 +78,16 @@ export default async function BlogPost({ params }: Props) {
       <h1 className="text-4xl font-black text-white mb-4">{article.title}</h1>
       {article.publishedAt && (
          <p className="text-sm text-zinc-500 mb-8">{new Date(article.publishedAt).toLocaleDateString()}</p>
+      )}
+      {typeof article.coverImage === 'object' && article.coverImage?.url && (
+        <Image
+          src={article.coverImage.url}
+          alt={article.coverImage.alt || article.title}
+          width={800}
+          height={450}
+          className="w-full h-auto rounded-xl mb-8 object-cover"
+          priority={true}
+        />
       )}
       <div className="prose prose-invert max-w-none">
         <RichText data={article.content} />

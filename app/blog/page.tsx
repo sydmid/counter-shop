@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getPayload } from 'payload';
 import configPromise from '@/payload.config';
 import { logger } from '@/lib/logger';
@@ -64,6 +65,15 @@ export default async function BlogIndex({
             {articles.map((article: any) => (
               <div key={article.id} className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 hover:border-indigo-500/50 transition-colors">
                 <Link href={`/blog/${article.slug}`}>
+                  {typeof article.coverImage === 'object' && article.coverImage?.url && (
+                    <Image
+                      src={article.coverImage.url}
+                      alt={article.coverImage.alt || article.title}
+                      width={400}
+                      height={225}
+                      className="w-full h-48 object-cover mb-4 rounded-md"
+                    />
+                  )}
                   <h2 className="text-xl font-bold text-white mb-2 cursor-pointer hover:text-indigo-400">{article.title}</h2>
                 </Link>
                 {article.publishedAt && (
