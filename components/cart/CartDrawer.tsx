@@ -13,6 +13,7 @@ export function CartDrawer() {
   const [paymentMethod, setPaymentMethod] = useState<string>("CARD");
   const [isProcessing, setIsProcessing] = useState(false);
   const [promoInput, setPromoInput] = useState("");
+  const [promoError, setPromoError] = useState<string | null>(null);
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
 
   if (!isCartOpen) return null;
@@ -24,8 +25,9 @@ export function CartDrawer() {
     if (promoInput.toUpperCase() === "NEWUSER20") {
       setAppliedPromo("NEWUSER20");
       setPromoInput("");
+      setPromoError(null);
     } else {
-      alert("Invalid promo code");
+      setPromoError("Invalid promo code");
     }
   };
 
@@ -145,8 +147,8 @@ export function CartDrawer() {
                 <div className="flex space-x-2">
                   <input
                     type="text"
-                    value={promoCodeInput}
-                    onChange={(e) => setPromoCodeInput(e.target.value)}
+                    value={promoInput}
+                    onChange={(e) => setPromoInput(e.target.value)}
                     placeholder="Enter code"
                     className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors uppercase"
                     disabled={appliedPromo !== null}
@@ -156,7 +158,7 @@ export function CartDrawer() {
                       variant="outline"
                       onClick={() => {
                         setAppliedPromo(null);
-                        setPromoCodeInput("");
+                        setPromoInput("");
                         setPromoError(null);
                       }}
                       className="text-red-400 hover:text-red-300 hover:bg-red-400/10 border-red-400/20"
@@ -166,9 +168,9 @@ export function CartDrawer() {
                   ) : (
                     <Button
                       onClick={() => {
-                        const code = promoCodeInput.trim().toUpperCase();
+                        const code = promoInput.trim().toUpperCase();
                         if (code === "NEW20" || code === "NEWUSER20") {
-                          setAppliedPromo(code);
+                          setAppliedPromo("NEWUSER20");
                           setPromoError(null);
                         } else {
                           setPromoError("Invalid promo code");
@@ -222,7 +224,7 @@ export function CartDrawer() {
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
                     placeholder="Enter code (e.g. NEWUSER20)"
-                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                    className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 uppercase"
                   />
                   <Button
                     variant="outline"
@@ -233,6 +235,7 @@ export function CartDrawer() {
                     Apply
                   </Button>
                 </div>
+                {promoError && <div className="text-xs text-red-400">{promoError}</div>}
               </div>
 
               <div className="space-y-3">
